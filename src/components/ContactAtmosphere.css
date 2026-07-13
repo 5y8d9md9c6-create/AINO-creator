@@ -1,0 +1,117 @@
+.contact-atmosphere {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.contact-atmosphere__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.contact-atmosphere__glow--a {
+  top: 8%;
+  right: 12%;
+  width: clamp(180px, 28vw, 320px);
+  height: clamp(140px, 22vw, 260px);
+  background: radial-gradient(circle, rgba(247, 244, 238, 0.55) 0%, transparent 72%);
+}
+
+.contact-atmosphere__glow--b {
+  bottom: 12%;
+  left: 6%;
+  width: clamp(160px, 24vw, 280px);
+  height: clamp(120px, 20vw, 220px);
+  background: radial-gradient(circle, rgba(238, 233, 223, 0.42) 0%, transparent 72%);
+}
+
+.contact-atmosphere__memory {
+  position: absolute;
+  font-family: var(--font-body-soft);
+  letter-spacing: 0.08em;
+  color: #35332f;
+  opacity: 0.82;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.contact-atmosphere__cloud {
+  position: absolute;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.contact-atmosphere__cloud--a {
+  top: 10%;
+  right: 14%;
+  width: clamp(80px, 12vw, 120px);
+}
+
+.contact-atmosphere__cloud--b {
+  bottom: 16%;
+  left: 10%;
+  width: clamp(64px, 10vw, 96px);
+}
+
+.contact-atmosphere__cloud--c {
+  top: 44%;
+  right: 6%;
+  width: clamp(56px, 8vw, 80px);
+  opacity: 0.4;
+}
+
+.contact-atmosphere__paper {
+  position: absolute;
+  border-radius: 2px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.72) 0%, rgba(247, 244, 238, 0.55) 100%);
+  border: 1px solid rgba(198, 193, 182, 0.28);
+  box-shadow: 0 2px 8px rgba(26, 25, 23, 0.03);
+  pointer-events: none;
+}
+
+.contact-atmosphere__paper::after {
+  content: "";
+  position: absolute;
+  top: 35%;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: rgba(198, 193, 182, 0.22);
+  transform: rotate(-6deg);
+}
+
+.contact-atmosphere__bubble {
+  position: absolute;
+  padding: 6px 12px;
+  border-radius: 14px 14px 14px 4px;
+  border: 1px solid rgba(198, 193, 182, 0.32);
+  background: rgba(255, 255, 255, 0.42);
+  font-family: var(--font-body-soft);
+  font-size: clamp(10px, 1.2vw, 11px);
+  letter-spacing: 0.06em;
+  color: rgba(154, 149, 140, 0.62);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .contact-atmosphere__memory {
+    font-size: 9px !important;
+  }
+
+  .contact-atmosphere__cloud {
+    opacity: 0.35;
+  }
+
+  .contact-atmosphere__bubble {
+    display: none;
+  }
+
+  .contact-atmosphere__paper {
+    opacity: 0.06 !important;
+  }
+}

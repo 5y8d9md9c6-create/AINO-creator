@@ -1,0 +1,86 @@
+.about-playfield {
+  position: relative;
+  min-height: 480px;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.about-playfield__anchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.about-playfield__word {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3.8vw, 40px);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  opacity: 0.16;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+  transition: opacity 0.35s ease, color 0.35s ease;
+}
+
+.about-playfield__word.is-near {
+  opacity: 0.44;
+  color: var(--ink-soft);
+}
+
+.about-playfield__word.is-lit {
+  opacity: 0.78;
+  color: var(--ink);
+}
+
+.about-playfield__word:hover {
+  opacity: 0.52;
+}
+
+.about-playfield__incomplete {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.8vw, 30px);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  opacity: 0.14;
+  cursor: pointer;
+  transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+.about-playfield__incomplete:hover {
+  opacity: 0.55;
+}
+
+.about-playfield__incomplete.is-done {
+  color: var(--gray);
+  opacity: 0.5;
+}
+
+@media (max-width: 900px) {
+  .about-playfield {
+    display: block;
+    min-height: clamp(280px, 72vw, 420px);
+  }
+
+  .about-playfield__word {
+    font-size: clamp(13px, 3.6vw, 22px);
+    opacity: 0.24;
+  }
+
+  .about-playfield__word.is-near {
+    opacity: 0.5;
+  }
+
+  .about-playfield__incomplete {
+    font-size: clamp(12px, 3.2vw, 18px);
+    opacity: 0.24;
+  }
+}

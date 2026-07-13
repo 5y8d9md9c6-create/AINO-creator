@@ -1,0 +1,27 @@
+.hero-area {
+  position: relative;
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  overflow-x: clip;
+}
+
+.hero-area__stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-area .site-header {
+  position: relative;
+  z-index: 20;
+  background: transparent;
+}
+
+.hero-area .aino-section {
+  z-index: 5;
+}

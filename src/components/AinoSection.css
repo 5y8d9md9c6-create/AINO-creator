@@ -1,0 +1,14 @@
+.aino-section {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: clamp(380px, 46vh, 560px);
+}
+
+@media (max-width: 640px) {
+  .aino-section {
+    flex: none;
+    height: clamp(320px, 78vw, 460px);
+    min-height: 0;
+  }
+}

@@ -1,0 +1,81 @@
+.annotation-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  overflow: visible;
+}
+
+.annotation-node {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: opacity 0.35s ease;
+}
+
+.letter-annotation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-marker);
+  font-weight: 700;
+  font-size: clamp(14px, 1.5vw, 18px);
+  color: var(--ink-soft);
+  white-space: nowrap;
+  user-select: none;
+  transform: translateY(0);
+}
+
+.letter-annotation__word {
+  display: inline-block;
+  transform: rotate(-4deg);
+}
+
+.letter-annotation--down .letter-annotation__word {
+  transform: rotate(3deg);
+}
+
+.letter-annotation--shake {
+  gap: 4px;
+}
+
+.letter-annotation--roll .letter-annotation__word {
+  transform: rotate(-2deg);
+}
+
+.letter-annotation__icon {
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.letter-annotation__icon--push {
+  width: 20px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+.letter-annotation__icon--down {
+  width: 14px;
+  height: 30px;
+}
+
+.letter-annotation__icon--shake-left,
+.letter-annotation__icon--shake-right {
+  width: 26px;
+  height: 20px;
+}
+
+.letter-annotation__icon--roll {
+  width: 38px;
+  height: 30px;
+  transform: translateY(2px);
+}
+
+.letter-annotation__cursor {
+  width: 30px;
+  height: 30px;
+  color: var(--ink);
+  filter: drop-shadow(0 3px 4px rgba(20, 18, 15, 0.25));
+}

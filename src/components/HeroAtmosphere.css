@@ -1,0 +1,179 @@
+.hero-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Gallery / atelier neutral — warm, not cream, not blue */
+.hero-atmosphere__base {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(130% 95% at 50% 18%, #f3f2ef 0%, #eeedea 38%, #eae9e5 100%);
+}
+
+/* Light effects concentrated around AINO */
+.hero-atmosphere__aino-air {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(0px, 2vh, 24px);
+  transform: translateX(-50%);
+  width: clamp(280px, 72vw, 920px);
+  height: clamp(240px, 48vh, 520px);
+}
+
+.hero-atmosphere__lights {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-atmosphere__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  will-change: transform, opacity;
+}
+
+.hero-atmosphere__orb--pink {
+  top: 28%;
+  left: 14%;
+  width: clamp(120px, 22vw, 240px);
+  height: clamp(120px, 22vw, 240px);
+  background: radial-gradient(circle, rgba(255, 196, 210, 0.07) 0%, rgba(255, 196, 210, 0) 72%);
+  animation: heroOrbPink 17s ease-in-out infinite;
+}
+
+.hero-atmosphere__orb--yellow {
+  top: 18%;
+  left: 42%;
+  width: clamp(130px, 24vw, 260px);
+  height: clamp(130px, 24vw, 260px);
+  background: radial-gradient(circle, rgba(255, 232, 168, 0.06) 0%, rgba(255, 232, 168, 0) 72%);
+  animation: heroOrbYellow 15s ease-in-out infinite;
+}
+
+.hero-atmosphere__orb--blue {
+  top: 32%;
+  right: 12%;
+  width: clamp(110px, 20vw, 220px);
+  height: clamp(110px, 20vw, 220px);
+  background: radial-gradient(circle, rgba(198, 214, 248, 0.055) 0%, rgba(198, 214, 248, 0) 72%);
+  animation: heroOrbBlue 18s ease-in-out infinite;
+}
+
+@keyframes heroOrbPink {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.42;
+  }
+  50% {
+    transform: translate(10px, -8px) scale(1.04);
+    opacity: 0.62;
+  }
+}
+
+@keyframes heroOrbYellow {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.38;
+  }
+  50% {
+    transform: translate(-8px, 6px) scale(1.03);
+    opacity: 0.58;
+  }
+}
+
+@keyframes heroOrbBlue {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.36;
+  }
+  50% {
+    transform: translate(8px, 5px) scale(1.03);
+    opacity: 0.52;
+  }
+}
+
+/* Soft lift behind AINO — warm, not luminous */
+.hero-atmosphere__aino-glow {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translateX(-50%);
+  width: clamp(220px, 52vw, 680px);
+  height: clamp(140px, 26vh, 340px);
+  background:
+    radial-gradient(
+      ellipse 74% 64% at 50% 56%,
+      rgba(255, 252, 248, 0.22) 0%,
+      rgba(255, 246, 238, 0.08) 42%,
+      rgba(252, 250, 246, 0.02) 66%,
+      transparent 80%
+    );
+}
+
+/* Digital-soft noise */
+.hero-atmosphere__noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+  background-size: 140px 140px;
+}
+
+/* Particles — AINO vicinity only */
+.hero-atmosphere__particles {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-atmosphere__particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.32;
+  animation: heroParticleDrift ease-in-out infinite;
+}
+
+.hero-atmosphere__particle--white {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.hero-atmosphere__particle--pink {
+  background: rgba(255, 204, 216, 0.42);
+  box-shadow: 0 0 2px rgba(255, 204, 216, 0.15);
+}
+
+.hero-atmosphere__particle--yellow {
+  background: rgba(255, 228, 170, 0.38);
+  box-shadow: 0 0 2px rgba(255, 228, 170, 0.12);
+}
+
+.hero-atmosphere__particle--blue {
+  background: rgba(196, 214, 248, 0.36);
+  box-shadow: 0 0 2px rgba(196, 214, 248, 0.12);
+}
+
+@keyframes heroParticleDrift {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0.2;
+  }
+  33% {
+    transform: translate(5px, -7px);
+    opacity: 0.36;
+  }
+  66% {
+    transform: translate(-4px, 6px);
+    opacity: 0.26;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-atmosphere__orb,
+  .hero-atmosphere__particle {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,113 @@
+.shy-scroll {
+  position: fixed;
+  top: 10px;
+  right: 6px;
+  z-index: 980;
+  pointer-events: none;
+}
+
+.shy-scroll__track {
+  position: relative;
+  width: 12px;
+  border-radius: 999px;
+  background: rgba(198, 193, 182, 0.14);
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.shy-scroll__thumb {
+  position: absolute;
+  left: 1px;
+  width: 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(247, 244, 238, 0.88) 100%);
+  border: 1.5px solid rgba(79, 47, 53, 0.22);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 4px 12px rgba(26, 25, 23, 0.06);
+  cursor: grab;
+  transform-origin: center center;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.shy-scroll__thumb--dragging {
+  cursor: grabbing;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+  border-color: rgba(79, 47, 53, 0.34);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 6px 16px rgba(26, 25, 23, 0.1);
+}
+
+.shy-scroll__thumb--fleeing {
+  border-color: rgba(79, 47, 53, 0.28);
+}
+
+.shy-scroll__thumb--surrendered {
+  border-color: rgba(79, 47, 53, 0.3);
+}
+
+.shy-scroll__face {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 4px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+}
+
+.shy-scroll__thumb--fleeing .shy-scroll__face,
+.shy-scroll__thumb--dragging .shy-scroll__face {
+  opacity: 0.72;
+}
+
+.shy-scroll__eye {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(79, 47, 53, 0.62);
+  transition: transform 0.22s ease;
+}
+
+.shy-scroll__blush {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  width: 6px;
+  height: 2px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(224, 142, 142, 0.28);
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .shy-scroll {
+    right: 4px;
+  }
+
+  .shy-scroll__track {
+    width: 10px;
+  }
+
+  .shy-scroll__thumb {
+    width: 8px;
+    left: 1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shy-scroll__thumb {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+}
