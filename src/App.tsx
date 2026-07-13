@@ -8,6 +8,7 @@ import HeroAtmosphere from "./components/HeroAtmosphere";
 import DeferredMount from "./components/DeferredMount";
 import MotionBoundary from "./lib/MotionBoundary";
 import { ContactPlaneProvider } from "./context/ContactPlaneContext";
+import { PaperPlaneFlightLayer } from "./components/PaperPlaneContact";
 import { useWorkRoute } from "./hooks/useWorkRoute";
 import { getWorkById, isExternalWork } from "./data/works";
 import { navigateToWorksIndex } from "./lib/navigation";
@@ -21,11 +22,6 @@ const ProcessSection = lazy(() => import("./components/ProcessSection"));
 const PlanSection = lazy(() => import("./components/PlanSection"));
 const ContactSection = lazy(() => import("./components/ContactSection"));
 const FooterSection = lazy(() => import("./components/FooterSection"));
-const PaperPlaneFlightLayer = lazy(() =>
-  import("./components/PaperPlaneContact").then((module) => ({
-    default: module.PaperPlaneFlightLayer,
-  })),
-);
 function ExternalWorkRedirect({ url }: { url: string }) {
   useEffect(() => {
     window.location.replace(url);
@@ -118,7 +114,7 @@ function App() {
             </MotionBoundary>
           </Suspense>
         </DeferredMount>
-        <DeferredMount anchorId="contact" minHeight="100vh">
+        <DeferredMount anchorId="contact" minHeight="100vh" rootMargin="480px 0px">
           <Suspense fallback={null}>
             <MotionBoundary>
               <ContactSection />
@@ -132,9 +128,9 @@ function App() {
             </MotionBoundary>
           </Suspense>
         </DeferredMount>
-        <Suspense fallback={null}>
+        <MotionBoundary>
           <PaperPlaneFlightLayer />
-        </Suspense>
+        </MotionBoundary>
         <div className="grain-overlay" aria-hidden="true" />
       </main>
     </ContactPlaneProvider>

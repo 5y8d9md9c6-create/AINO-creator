@@ -248,6 +248,13 @@ export default function ContactSection() {
   }, [reduceMotion]);
 
   useEffect(() => {
+    if (!arrivedByPlane || formAfterEnvelope || sent) return;
+    const envelopeDelay = reduceMotion ? 80 : getEnvelopeToFormMs();
+    const timer = window.setTimeout(() => setFormAfterEnvelope(true), envelopeDelay);
+    return () => window.clearTimeout(timer);
+  }, [arrivedByPlane, formAfterEnvelope, reduceMotion, sent]);
+
+  useEffect(() => {
     if (phase === "flying" && flightIntent === "navigate") {
       setFormAfterEnvelope(false);
       setSent(false);

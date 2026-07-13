@@ -36,8 +36,18 @@ export default function DeferredMount({
       }
     };
 
+    const onRequestMount = () => {
+      if (anchorId !== "contact") return;
+      setQueued(true);
+      setLive(true);
+    };
+
     window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    window.addEventListener("aino:request-contact-mount", onRequestMount);
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+      window.removeEventListener("aino:request-contact-mount", onRequestMount);
+    };
   }, [anchorId]);
 
   useEffect(() => {
@@ -50,7 +60,7 @@ export default function DeferredMount({
       ([entry]) => {
         if (entry.isIntersecting) {
           setQueued(true);
-          scheduleIdleTask(() => setLive(true), { timeout: 2400, gapMs: 96 });
+          scheduleIdleTask(() => setLive(true), { timeout: anchorId === "contact" ? 600 : 2400, gapMs: 96 });
           observer.disconnect();
         }
       },

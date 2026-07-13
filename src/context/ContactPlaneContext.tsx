@@ -39,6 +39,7 @@ export function ContactPlaneProvider({ children }: { children: ReactNode }) {
   const [submitMailto, setSubmitMailto] = useState<string | null>(null);
 
   const launch = useCallback((nextOrigin: Origin) => {
+    window.dispatchEvent(new CustomEvent("aino:request-contact-mount"));
     setLandedViaPlane(false);
     setSubmitMailto(null);
     setFlightIntent("navigate");

@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://aino-creator.jp/sitemap.xml
