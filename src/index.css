@@ -94,6 +94,10 @@ a {
     content-visibility: visible;
     contain-intrinsic-size: initial;
   }
+
+  .grain-overlay {
+    mix-blend-mode: normal;
+  }
 }
 
 .page > .process-section {
