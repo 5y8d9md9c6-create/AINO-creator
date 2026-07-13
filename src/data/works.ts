@@ -34,6 +34,20 @@ const FACEMASK_IMAGES = Array.from({ length: 12 }, (_, i) => {
 
 export const WORKS: Work[] = [
   {
+    id: "web-tattoo-homies",
+    category: "WEB",
+    title: "TATTOO STUDIO HOMIES",
+    thumbnail: "/works/tattoo-homies.png",
+    images: ["/works/tattoo-homies.png"],
+    overview: "",
+    background: "",
+    role: [],
+    tools: [],
+    period: "2026年",
+    layout: "wide",
+    comingSoon: true,
+  },
+  {
     id: "web-openhouse",
     category: "WEB",
     title: "HIKARI HOME｜オープンハウスLP",
@@ -95,20 +109,6 @@ export const WORKS: Work[] = [
     tools: ["Figma", "Photoshop"],
     period: "2025年",
     layout: "default",
-  },
-  {
-    id: "web-tattoo-homies",
-    category: "WEB",
-    title: "TATTOO STUDIO HOMIES",
-    thumbnail: "/works/tattoo-homies.png",
-    images: ["/works/tattoo-homies.png"],
-    overview: "",
-    background: "",
-    role: [],
-    tools: [],
-    period: "2026年",
-    layout: "wide",
-    comingSoon: true,
   },
   {
     id: "graphic-flyer-gym",
