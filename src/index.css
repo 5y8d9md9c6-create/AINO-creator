@@ -79,6 +79,23 @@ a {
   flex-direction: column;
 }
 
+@media (max-width: 767px) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* content-visibility skips layout until visible — causes scroll jumps on touch devices. */
+  .about-section,
+  .works-section,
+  .process-section,
+  .plan-section,
+  .contact-section,
+  .site-footer {
+    content-visibility: visible;
+    contain-intrinsic-size: initial;
+  }
+}
+
 .page > .process-section {
   flex-shrink: 0;
   width: 100%;

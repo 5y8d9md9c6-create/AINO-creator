@@ -34,6 +34,7 @@ export default function ShyScrollbar() {
   const [dragging, setDragging] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [canFlee, setCanFlee] = useState(false);
+  const [touchUi, setTouchUi] = useState(false);
 
   const fleeCountRef = useRef(0);
   const fleeTimerRef = useRef<number | null>(null);
@@ -78,14 +79,18 @@ export default function ShyScrollbar() {
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const fleeQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const touchQuery = window.matchMedia("(max-width: 767px), (pointer: coarse)");
 
     const applyMotion = () => setReducedMotion(motionQuery.matches);
     const applyFlee = () => setCanFlee(fleeQuery.matches);
+    const applyTouch = () => setTouchUi(touchQuery.matches);
 
     applyMotion();
     applyFlee();
+    applyTouch();
     motionQuery.addEventListener("change", applyMotion);
     fleeQuery.addEventListener("change", applyFlee);
+    touchQuery.addEventListener("change", applyTouch);
 
     updateMetrics();
     const onScroll = () => {
@@ -98,6 +103,7 @@ export default function ShyScrollbar() {
     return () => {
       motionQuery.removeEventListener("change", applyMotion);
       fleeQuery.removeEventListener("change", applyFlee);
+      touchQuery.removeEventListener("change", applyTouch);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", updateMetrics);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -249,7 +255,7 @@ export default function ShyScrollbar() {
     });
   };
 
-  if (!visible) return null;
+  if (!visible || touchUi) return null;
 
   const scaleX = squashPhase === "squash" ? 1.08 : squashPhase === "bounce" ? 0.94 : 1;
   const scaleY = squashPhase === "squash" ? 0.9 : squashPhase === "bounce" ? 1.06 : 1;

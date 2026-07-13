@@ -91,6 +91,12 @@
   pointer-events: none;
 }
 
+@media (max-width: 767px), (pointer: coarse) {
+  .shy-scroll {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   .shy-scroll {
     right: 4px;

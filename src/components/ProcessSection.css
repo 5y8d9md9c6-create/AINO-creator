@@ -376,7 +376,17 @@
 }
 
 /* Mobile */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
+  .process-section--mobile-scroll {
+    /* Shorter track + stable viewport height while address bar toggles. */
+    touch-action: pan-y;
+  }
+
+  .process-section--mobile-scroll .process-section__sticky {
+    height: 100svh;
+    max-height: 100svh;
+  }
+
   .process-section__sticky {
     padding: clamp(24px, 4vh, 36px) clamp(16px, 4vw, 24px) clamp(12px, 2.5vh, 20px);
   }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { isMobileScrollViewport } from "../lib/mobileScroll";
 import { scheduleIdleTask } from "../lib/idleMount";
 
 type DeferredMountProps = {
@@ -60,7 +61,11 @@ export default function DeferredMount({
       ([entry]) => {
         if (entry.isIntersecting) {
           setQueued(true);
-          scheduleIdleTask(() => setLive(true), { timeout: anchorId === "contact" ? 600 : 2400, gapMs: 96 });
+          if (isMobileScrollViewport()) {
+            setLive(true);
+          } else {
+            scheduleIdleTask(() => setLive(true), { timeout: anchorId === "contact" ? 600 : 2400, gapMs: 96 });
+          }
           observer.disconnect();
         }
       },
@@ -80,7 +85,7 @@ export default function DeferredMount({
       style={{
         minHeight: reserveSpace ? minHeight : undefined,
         scrollMarginTop: "24px",
-        contentVisibility: live ? "visible" : "auto",
+        contentVisibility: live || isMobileScrollViewport() ? "visible" : "auto",
       }}
     >
       {live ? children : null}

@@ -9,13 +9,17 @@ import {
   type MotionValue,
 } from "../lib/motion";
 import { useEffect, useRef, useState } from "react";
+import { MOBILE_SCROLL_MAX } from "../lib/mobileScroll";
 import { mixAtmosphere, PROCESS_BRIDGE, PROCESS_INTRO_ASIDE, PROCESS_STEPS } from "../data/process";
 import "./ProcessSection.css";
 
 const OPENING_CHARS = ["思", "考", "室"] as const;
 const STEP_COUNT = PROCESS_STEPS.length;
 const REVEAL_PORTION = 0.84;
+/** Desktop: long scroll track for horizontal card choreography. */
 const PIN_SCROLL_VH = 58 * STEP_COUNT + 14 * (STEP_COUNT - 1) + 76;
+/** Mobile: shorter track — keeps horizontal motion without hijacking page scroll. */
+const PIN_SCROLL_VH_MOBILE = 26 * STEP_COUNT + 10 * (STEP_COUNT - 1) + 44;
 const EASE = [0.22, 1, 0.36, 1] as const;
 const BREATH = { duration: 4.8, repeat: Infinity, ease: "easeInOut" as const };
 
@@ -41,7 +45,7 @@ function computeCardLayout(
   cardWidth: number,
   viewportWidth: number,
 ): CardLayout {
-  const isMobile = viewportWidth < 640;
+  const isMobile = viewportWidth <= MOBILE_SCROLL_MAX;
   const align =
     progress <= REVEAL_PORTION
       ? 0
@@ -417,23 +421,30 @@ function ProcessStage({
     const stage = stageRef.current;
     if (!stage) return;
 
+    let frame = 0;
     const measure = () => {
       const probe = stage.querySelector<HTMLElement>(".process-card");
       if (probe) setCardWidth(probe.offsetWidth);
       setViewportWidth(stage.clientWidth);
     };
 
+    const scheduleMeasure = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(measure);
+    };
+
     measure();
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(scheduleMeasure);
     observer.observe(stage);
-    window.addEventListener("resize", measure);
+    window.addEventListener("resize", scheduleMeasure);
     return () => {
       observer.disconnect();
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("resize", scheduleMeasure);
+      if (frame) cancelAnimationFrame(frame);
     };
   }, []);
 
-  const stageIsMobile = isMobile || viewportWidth < 640;
+  const stageIsMobile = isMobile || viewportWidth <= MOBILE_SCROLL_MAX;
 
   return (
     <div className="process-stage" ref={stageRef}>
@@ -513,7 +524,7 @@ export default function ProcessSection() {
   const reduceMotion = useReducedMotion();
   const [bgColor, setBgColor] = useState(PROCESS_STEPS[0].atmosphere);
   const [isMobile, setIsMobile] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches,
+    () => typeof window !== "undefined" && window.matchMedia(`(max-width: ${MOBILE_SCROLL_MAX}px)`).matches,
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAligning, setIsAligning] = useState(false);
@@ -527,12 +538,17 @@ export default function ProcessSection() {
   const flowIndex = useTransform(scrollYProgress, [0, REVEAL_PORTION], [0, STEP_COUNT - 1]);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
+    const mq = window.matchMedia(`(max-width: ${MOBILE_SCROLL_MAX}px)`);
     const update = () => setIsMobile(mq.matches);
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  const pinScrollVh = isMobile ? PIN_SCROLL_VH_MOBILE : PIN_SCROLL_VH;
+  const sectionHeight = isMobile
+    ? `calc(100svh + ${pinScrollVh}vh)`
+    : `calc(100vh + ${pinScrollVh}vh)`;
 
   useMotionValueEvent(scrollYProgress, "change", (p) => {
     setShowBridge(p > REVEAL_PORTION + 0.08);
@@ -565,9 +581,9 @@ export default function ProcessSection() {
   return (
     <section
       ref={sectionRef}
-      className="process-section"
+      className={`process-section${isMobile ? " process-section--mobile-scroll" : ""}`}
       style={{
-        height: `calc(100vh + ${PIN_SCROLL_VH}vh)`,
+        height: sectionHeight,
         backgroundColor: bgColor,
       }}
       aria-labelledby="process-opening-title"
