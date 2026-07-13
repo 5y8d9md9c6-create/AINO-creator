@@ -29,16 +29,6 @@
   background: radial-gradient(circle, rgba(238, 233, 223, 0.42) 0%, transparent 72%);
 }
 
-.contact-atmosphere__memory {
-  position: absolute;
-  font-family: var(--font-body-soft);
-  letter-spacing: 0.08em;
-  color: #35332f;
-  opacity: 0.82;
-  white-space: nowrap;
-  user-select: none;
-}
-
 .contact-atmosphere__cloud {
   position: absolute;
   opacity: 0.55;
@@ -84,31 +74,9 @@
   transform: rotate(-6deg);
 }
 
-.contact-atmosphere__bubble {
-  position: absolute;
-  padding: 6px 12px;
-  border-radius: 14px 14px 14px 4px;
-  border: 1px solid rgba(198, 193, 182, 0.32);
-  background: rgba(255, 255, 255, 0.42);
-  font-family: var(--font-body-soft);
-  font-size: clamp(10px, 1.2vw, 11px);
-  letter-spacing: 0.06em;
-  color: rgba(154, 149, 140, 0.62);
-  white-space: nowrap;
-  pointer-events: none;
-}
-
 @media (max-width: 640px) {
-  .contact-atmosphere__memory {
-    font-size: 9px !important;
-  }
-
   .contact-atmosphere__cloud {
     opacity: 0.35;
-  }
-
-  .contact-atmosphere__bubble {
-    display: none;
   }
 
   .contact-atmosphere__paper {

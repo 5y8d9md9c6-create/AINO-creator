@@ -3,11 +3,15 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, type MouseEve
 import { createPortal } from "react-dom";
 import { useContactPlane } from "../context/ContactPlaneContext";
 import { CONTACT_FORM } from "../data/contact";
+import {
+  getFlightMs,
+  getFlightScrollDelayMs,
+  getFlightSegments,
+  isMobileViewport,
+} from "../lib/motionTiming";
 import "./PaperPlaneContact.css";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const FLIGHT_MS = 2200;
-const FLIGHT_SEGMENTS = 18;
 
 type Point = { x: number; y: number };
 type FlightPoint = Point & { rotate: number };
@@ -21,10 +25,12 @@ function buildWobblyFlight(
   origin: Point,
   landing: Point,
   seed = Math.random(),
-  segments = FLIGHT_SEGMENTS,
+  segments = getFlightSegments(),
+  compact = isMobileViewport(),
 ) {
-  const midX = (origin.x + landing.x) / 2 + (seed - 0.5) * 40;
-  const arcLift = Math.min(180, Math.max(80, Math.abs(landing.y - origin.y) * 0.38 + 72 + seed * 24));
+  const midX = (origin.x + landing.x) / 2 + (seed - 0.5) * (compact ? 24 : 40);
+  const arcLiftBase = Math.min(180, Math.max(80, Math.abs(landing.y - origin.y) * 0.38 + 72 + seed * 24));
+  const arcLift = compact ? arcLiftBase * 0.62 : arcLiftBase;
   const midY = Math.min(origin.y, landing.y) - arcLift;
   const phase = seed * Math.PI * 2;
   const amp = 0.82 + seed * 0.36;
@@ -127,18 +133,25 @@ export function PaperPlaneGraphic({
   className,
   flying = false,
   showMotionLines = false,
+  lite = false,
 }: {
   active: boolean;
   reduceMotion: boolean | null;
   className?: string;
   flying?: boolean;
   showMotionLines?: boolean;
+  lite?: boolean;
 }) {
   const filterId = useId().replace(/:/g, "");
   const noseOrigin = "82px 28px";
   const hoverActive = active && !reduceMotion;
   const flutterActive = flying && !reduceMotion;
   const motionLinesVisible = showMotionLines || hoverActive || flutterActive;
+  const sketchFilter = lite ? undefined : `url(#sketch-${filterId})`;
+  const shadowFilter = lite ? undefined : `url(#soft-shadow-${filterId})`;
+  const flutterDuration = lite ? 0.32 : 0.5;
+  const wingDuration = lite ? 0.28 : 0.44;
+  const wingHighDuration = lite ? 0.26 : 0.42;
 
   const strokeShape = (d: string, fill: string, key?: string) => (
     <g key={key}>{inkStroke(d, fill)}</g>
@@ -158,7 +171,7 @@ export function PaperPlaneGraphic({
             : { rotate: 0, y: 0 }
       }
       transition={{
-        duration: flutterActive ? 0.5 : 3.6,
+        duration: flutterActive ? flutterDuration : 3.6,
         repeat: hoverActive || flutterActive ? Infinity : 0,
         ease: "easeInOut",
       }}
@@ -167,8 +180,8 @@ export function PaperPlaneGraphic({
         {sketchDefs(filterId)}
       </defs>
 
-      <g filter={`url(#soft-shadow-${filterId})`}>
-        <g filter={`url(#sketch-${filterId})`}>
+      <g filter={shadowFilter}>
+        <g filter={sketchFilter}>
           {/* keel — grey underside */}
           {strokeShape("M24 63 L81 29 L57 56 L24 63 Z", SHADE, "keel")}
 
@@ -183,7 +196,7 @@ export function PaperPlaneGraphic({
                   : { rotate: 0 }
             }
             transition={{
-              duration: flutterActive ? 0.44 : 2.8,
+              duration: flutterActive ? wingDuration : 2.8,
               repeat: hoverActive || flutterActive ? Infinity : 0,
               ease: "easeInOut",
             }}
@@ -202,7 +215,7 @@ export function PaperPlaneGraphic({
                   : { rotate: 0 }
             }
             transition={{
-              duration: flutterActive ? 0.42 : 2.6,
+              duration: flutterActive ? wingHighDuration : 2.6,
               repeat: hoverActive || flutterActive ? Infinity : 0,
               ease: "easeInOut",
               delay: 0.05,
@@ -386,6 +399,8 @@ export function PaperPlaneFlightLayer() {
   useEffect(() => {
     if (phase !== "flying" || !origin || !flightIntent || reduceMotion) return;
 
+    const flightMs = getFlightMs();
+    const scrollDelayMs = getFlightScrollDelayMs();
     const landing =
       flightIntent === "submit"
         ? getSubmitTarget()
@@ -398,13 +413,13 @@ export function PaperPlaneFlightLayer() {
       const contact = document.getElementById("contact");
       window.setTimeout(() => {
         contact?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 280);
+      }, scrollDelayMs);
     }
 
     if (flightIntent === "returnHero") {
       window.setTimeout(() => {
         document.getElementById("top")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 280);
+      }, scrollDelayMs);
     }
 
     const timer = window.setTimeout(() => {
@@ -421,7 +436,7 @@ export function PaperPlaneFlightLayer() {
         completeFlight();
         window.dispatchEvent(new CustomEvent("aino:contact-plane-landed"));
       }
-    }, FLIGHT_MS);
+    }, flightMs);
 
     return () => window.clearTimeout(timer);
   }, [
@@ -459,6 +474,9 @@ export function PaperPlaneFlightLayer() {
 
   if (reduceMotion || typeof document === "undefined") return null;
 
+  const flightMs = getFlightMs();
+  const flightLite = isMobileViewport();
+
   return createPortal(
     <AnimatePresence>
       {phase === "flying" && origin && flight && keyframes ? (
@@ -480,7 +498,7 @@ export function PaperPlaneFlightLayer() {
               strokeLinecap="round"
               initial={{ pathLength: 0, opacity: 0.45 }}
               animate={{ pathLength: 1, opacity: 0 }}
-              transition={{ duration: FLIGHT_MS / 1000, ease: "linear" }}
+              transition={{ duration: flightMs / 1000, ease: "linear" }}
             />
           </svg>
 
@@ -505,7 +523,7 @@ export function PaperPlaneFlightLayer() {
               opacity: keyframes.opacity,
             }}
             transition={{
-              duration: FLIGHT_MS / 1000,
+              duration: flightMs / 1000,
               ease: "linear",
               times: keyframes.times,
             }}
@@ -515,6 +533,7 @@ export function PaperPlaneFlightLayer() {
               flying
               showMotionLines
               reduceMotion={false}
+              lite={flightLite}
               className="paper-plane-flight__plane-svg"
             />
           </motion.div>

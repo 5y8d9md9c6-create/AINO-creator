@@ -132,11 +132,13 @@ interface SceneContentProps {
   onInteract: (id: LetterId) => void;
   registerRef: (id: LetterId, handle: LetterHandle | null) => void;
   posRef: MutableRefObject<AnnotationPositions>;
+  onSceneReady?: () => void;
 }
 
-function SceneContent({ onInteract, registerRef, posRef }: SceneContentProps) {
+function SceneContent({ onInteract, registerRef, posRef, onSceneReady }: SceneContentProps) {
   const { scale, posY } = useWordFit();
   const anchors = useRef<Partial<Record<AnchorKey, THREE.Object3D | null>>>({});
+  const sceneReadyRef = useRef(false);
   const material = useMemo(() => {
     const grain = createGrainTexture();
     const mat = new THREE.MeshPhysicalMaterial({
@@ -161,6 +163,12 @@ function SceneContent({ onInteract, registerRef, posRef }: SceneContentProps) {
     };
   }, [material]);
 
+  useFrame(() => {
+    if (sceneReadyRef.current) return;
+    sceneReadyRef.current = true;
+    onSceneReady?.();
+  });
+
   return (
     <TiltRig>
       <group position={[0, posY, 0]} scale={scale}>
@@ -170,7 +178,8 @@ function SceneContent({ onInteract, registerRef, posRef }: SceneContentProps) {
             id={id}
             x={x}
             material={material}
-            mountDelay={0.15 + i * 0.14}
+            mountDelay={i * 0.01}
+            instantEntry
             onInteract={onInteract}
             ref={(handle) => registerRef(id, handle)}
             extra={
@@ -196,6 +205,7 @@ function SceneContent({ onInteract, registerRef, posRef }: SceneContentProps) {
 
 interface AinoSceneProps {
   posRef: MutableRefObject<AnnotationPositions>;
+  onSceneReady?: () => void;
 }
 
 function useCanvasActivity() {
@@ -229,7 +239,7 @@ function useCanvasActivity() {
   return active;
 }
 
-export default function AinoScene({ posRef }: AinoSceneProps) {
+export default function AinoScene({ posRef, onSceneReady }: AinoSceneProps) {
   const refs = useRef<Partial<Record<LetterId, LetterHandle>>>({});
   const [ready, setReady] = useState(false);
   const canvasActive = useCanvasActivity();
@@ -239,7 +249,7 @@ export default function AinoScene({ posRef }: AinoSceneProps) {
   };
 
   useEffect(() => {
-    const timeout = setTimeout(() => setReady(true), 2600);
+    const timeout = setTimeout(() => setReady(true), 900);
     return () => clearTimeout(timeout);
   }, []);
 
@@ -287,10 +297,15 @@ export default function AinoScene({ posRef }: AinoSceneProps) {
       frameloop={canvasActive ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0.35, 13.5], fov: 26 }}
-      style={{ position: "absolute", inset: 0 }}
+      style={{ position: "absolute", inset: 0, zIndex: 2 }}
     >
       <SceneLights />
-      <SceneContent onInteract={() => {}} registerRef={registerRef} posRef={posRef} />
+      <SceneContent
+        onInteract={() => {}}
+        registerRef={registerRef}
+        posRef={posRef}
+        onSceneReady={onSceneReady}
+      />
     </Canvas>
   );
 }

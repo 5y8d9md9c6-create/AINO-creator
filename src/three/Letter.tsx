@@ -16,6 +16,7 @@ interface LetterProps {
   x: number;
   material: THREE.Material;
   mountDelay?: number;
+  instantEntry?: boolean;
   extra?: ReactNode;
   onInteract?: (id: LetterId) => void;
   onPointer?: (hovering: boolean) => void;
@@ -24,25 +25,25 @@ interface LetterProps {
 const DROP_FROM = 3.6;
 
 const Letter = forwardRef<LetterHandle, LetterProps>(function Letter(
-  { id, x, material, mountDelay = 0, extra, onInteract, onPointer },
+  { id, x, material, mountDelay = 0, instantEntry = false, extra, onInteract, onPointer },
   ref
 ) {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const pressedRef = useRef(false);
-  const startedRef = useRef(false);
+  const startedRef = useRef(instantEntry);
 
   const geometry = useMemo(() => buildLetterGeometry(id), [id]);
 
   const springs = useMemo(
     () => ({
-      posY: new ScalarSpring(DROP_FROM, DROP_FROM),
+      posY: new ScalarSpring(instantEntry ? 0 : DROP_FROM, instantEntry ? 0 : DROP_FROM),
       posX: new ScalarSpring(0),
       rotZ: new ScalarSpring(0),
-      squishY: new ScalarSpring(0.4),
-      squishXZ: new ScalarSpring(1.5),
+      squishY: new ScalarSpring(instantEntry ? 1 : 0.4, instantEntry ? 1 : 0.4),
+      squishXZ: new ScalarSpring(instantEntry ? 1 : 1.5, instantEntry ? 1 : 1.5),
     }),
-    [id]
+    [id, instantEntry],
   );
 
   const fire = () => {
@@ -125,7 +126,7 @@ const Letter = forwardRef<LetterHandle, LetterProps>(function Letter(
   return (
     <group
       ref={groupRef}
-      position={[x, DROP_FROM, 0]}
+      position={[x, instantEntry ? 0 : DROP_FROM, 0]}
       onPointerDown={(e) => {
         e.stopPropagation();
         fire();

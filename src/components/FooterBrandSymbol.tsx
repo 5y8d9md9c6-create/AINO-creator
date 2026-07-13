@@ -3,8 +3,6 @@ import { FOOTER_BRAND_LIT_SRC, FOOTER_BRAND_SRC, FOOTER_BRAND_TAP_HINT } from ".
 import "./FooterBrandSymbol.css";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const ART_W = 901;
-const ART_H = 960;
 
 type FooterBrandSymbolProps = {
   sparked: boolean;
@@ -29,8 +27,6 @@ export default function FooterBrandSymbol({ sparked, onTap }: FooterBrandSymbolP
               className="footer-brand__art footer-brand__art--base"
               src={FOOTER_BRAND_SRC}
               alt=""
-              width={ART_W}
-              height={ART_H}
               decoding="async"
               loading="lazy"
               draggable={false}
@@ -39,8 +35,6 @@ export default function FooterBrandSymbol({ sparked, onTap }: FooterBrandSymbolP
               className="footer-brand__art footer-brand__art--lit"
               src={FOOTER_BRAND_LIT_SRC}
               alt=""
-              width={ART_W}
-              height={ART_H}
               decoding="async"
               loading="lazy"
               draggable={false}

@@ -15,6 +15,7 @@ import {
 } from "../data/contact";
 import ContactAtmosphere from "./ContactAtmosphere";
 import { ContactEnvelopeIcon, ContactSubmitButton } from "./PaperPlaneContact";
+import { getEnvelopeToFormMs } from "../lib/motionTiming";
 import "./ContactAtmosphere.css";
 import "./ContactSection.css";
 import "./PaperPlaneContact.css";
@@ -22,7 +23,6 @@ import "./PaperPlaneContact.css";
 const OPENING_CHARS = ["そ", "の", "先"] as const;
 const EASE = [0.22, 1, 0.36, 1] as const;
 const BREATH = { duration: 4.8, repeat: Infinity, ease: "easeInOut" as const };
-const ENVELOPE_TO_FORM_MS = 880;
 const PLACEHOLDER_CYCLE_MS = 4200;
 
 const formContainer = {
@@ -235,7 +235,8 @@ export default function ContactSection() {
 
   useEffect(() => {
     const onLanded = () => {
-      window.setTimeout(() => setFormAfterEnvelope(true), reduceMotion ? 80 : ENVELOPE_TO_FORM_MS);
+      const envelopeDelay = reduceMotion ? 80 : getEnvelopeToFormMs();
+      window.setTimeout(() => setFormAfterEnvelope(true), envelopeDelay);
     };
     const onSent = () => setSent(true);
     window.addEventListener("aino:contact-plane-landed", onLanded);

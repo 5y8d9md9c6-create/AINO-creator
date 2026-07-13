@@ -1,44 +1,27 @@
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { createAnnotationPositions } from "../three/annotationTypes";
 import AinoAnnotations from "../three/AinoAnnotations";
-import { scheduleIdleTask } from "../lib/idleMount";
+import AinoScene from "../three/AinoScene";
 import "./AinoSection.css";
-
-const AinoScene = lazy(() => import("../three/AinoScene"));
 
 export default function AinoSection() {
   const posRef = useRef(createAnnotationPositions());
-  const [ready, setReady] = useState(false);
+  const [sceneVisible, setSceneVisible] = useState(false);
 
-  useEffect(() => {
-    const target = document.querySelector(".aino-section");
-    if (!target) return;
-
-    const activate = () => {
-      scheduleIdleTask(() => setReady(true), { timeout: 1400, gapMs: 0 });
-    };
-    const options = { once: true, passive: true } as const;
-
-    target.addEventListener("pointerdown", activate, options);
-    target.addEventListener("touchstart", activate, options);
-
-    const fallback = window.setTimeout(activate, 120000);
-
-    return () => {
-      target.removeEventListener("pointerdown", activate);
-      target.removeEventListener("touchstart", activate);
-      window.clearTimeout(fallback);
-    };
+  const handleSceneReady = useCallback(() => {
+    setSceneVisible(true);
   }, []);
 
   return (
     <div className="aino-section">
-      {ready ? (
-        <Suspense fallback={null}>
-          <AinoScene posRef={posRef} />
-          <AinoAnnotations posRef={posRef} />
-        </Suspense>
-      ) : null}
+      <div
+        className={`aino-section__silhouette${sceneVisible ? " aino-section__silhouette--hidden" : ""}`}
+        aria-hidden="true"
+      >
+        <span className="aino-section__silhouette-word">AINO</span>
+      </div>
+      <AinoScene posRef={posRef} onSceneReady={handleSceneReady} />
+      <AinoAnnotations posRef={posRef} />
     </div>
   );
 }
