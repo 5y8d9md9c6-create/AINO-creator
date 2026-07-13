@@ -5,33 +5,6 @@
   min-height: clamp(380px, 46vh, 560px);
 }
 
-.aino-section__silhouette {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.15s ease;
-}
-
-.aino-section__silhouette--hidden {
-  opacity: 0;
-}
-
-.aino-section__silhouette-word {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(72px, 18vw, 140px);
-  letter-spacing: 0.1em;
-  color: #1e1b17;
-  opacity: 0.92;
-  transform: translateY(4%);
-  user-select: none;
-}
-
 @media (max-width: 640px) {
   .aino-section {
     flex: none;
