@@ -23,6 +23,8 @@ export type Work = {
   /** lp-stitch = LP画像を隙間なく縦連結 */
   galleryMode?: WorkGalleryMode;
   layout?: WorkLayout;
+  /** 詳細ページの本文を Coming Soon 表示にする */
+  comingSoon?: boolean;
 };
 
 const FACEMASK_IMAGES = Array.from({ length: 12 }, (_, i) => {
@@ -95,19 +97,18 @@ export const WORKS: Work[] = [
     layout: "default",
   },
   {
-    id: "banner-dog-hotel",
-    category: "BANNER",
-    title: "PAWS HOTEL｜ドッグホテルバナー",
-    thumbnail: "/works/banner-dog-hotel.png",
-    images: ["/works/banner-dog-hotel.png"],
-    overview:
-      "ドッグホテル「PAWS HOTEL」のプロモーションバナー。「離れている時間も、安心で満たしたい。」を軸に、施設の魅力を伝える構成。",
-    background:
-      "飼い主の「離れている時間も安心したい」という感情に寄り添い、サービス内容が一覧で理解できるよう情報の優先順位を整理しました。",
-    role: ["デザイン", "情報整理"],
-    tools: ["Figma", "Photoshop"],
-    period: "2025年",
-    layout: "default",
+    id: "web-tattoo-homies",
+    category: "WEB",
+    title: "TATTOO STUDIO HOMIES",
+    thumbnail: "/works/tattoo-homies.png",
+    images: ["/works/tattoo-homies.png"],
+    overview: "",
+    background: "",
+    role: [],
+    tools: [],
+    period: "2026年",
+    layout: "wide",
+    comingSoon: true,
   },
   {
     id: "graphic-flyer-gym",

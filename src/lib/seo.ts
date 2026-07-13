@@ -103,10 +103,13 @@ export function applyWorkSeo(work: {
   title: string;
   overview: string;
   thumbnail: string;
+  comingSoon?: boolean;
 }) {
   applyDocumentSeo({
     title: workSeoTitle(work.title),
-    description: workSeoDescription(work.overview),
+    description: work.comingSoon
+      ? `${work.title} — 作品詳細はComing Soon。`
+      : workSeoDescription(work.overview),
     canonical: workCanonicalUrl(work.id),
     ogType: "article",
     ogImage: work.thumbnail,

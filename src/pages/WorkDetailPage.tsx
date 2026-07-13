@@ -82,41 +82,48 @@ export default function WorkDetailPage({ work }: { work: Work }) {
 
         <WorkGallery work={work} />
 
-        <div className="work-page__details">
-          <section className="work-page__block">
-            <h2 className="work-page__label">概要</h2>
-            <p className="work-page__text">{work.overview}</p>
-          </section>
-
-          <section className="work-page__block">
-            <h2 className="work-page__label">制作背景</h2>
-            <p className="work-page__text">{work.background}</p>
-          </section>
-
-          <div className="work-page__meta-grid">
-            <section className="work-page__block work-page__block--compact">
-              <h2 className="work-page__label">担当範囲</h2>
-              <ul className="work-page__tags">
-                {work.role.map((item) => (
-                  <li key={item} className="work-page__tag">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <section className="work-page__block work-page__block--compact">
-              <h2 className="work-page__label">使用ツール</h2>
-              <ul className="work-page__tags">
-                {work.tools.map((item) => (
-                  <li key={item} className="work-page__tag">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </section>
+        {work.comingSoon ? (
+          <div className="work-page__coming-soon" aria-live="polite">
+            <p className="work-page__coming-soon-label">Coming Soon</p>
+            <p className="work-page__coming-soon-note">作品詳細は近日公開予定です。</p>
           </div>
-        </div>
+        ) : (
+          <div className="work-page__details">
+            <section className="work-page__block">
+              <h2 className="work-page__label">概要</h2>
+              <p className="work-page__text">{work.overview}</p>
+            </section>
+
+            <section className="work-page__block">
+              <h2 className="work-page__label">制作背景</h2>
+              <p className="work-page__text">{work.background}</p>
+            </section>
+
+            <div className="work-page__meta-grid">
+              <section className="work-page__block work-page__block--compact">
+                <h2 className="work-page__label">担当範囲</h2>
+                <ul className="work-page__tags">
+                  {work.role.map((item) => (
+                    <li key={item} className="work-page__tag">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="work-page__block work-page__block--compact">
+                <h2 className="work-page__label">使用ツール</h2>
+                <ul className="work-page__tags">
+                  {work.tools.map((item) => (
+                    <li key={item} className="work-page__tag">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+          </div>
+        )}
       </motion.main>
     </div>
   );
