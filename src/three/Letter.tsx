@@ -2,7 +2,7 @@ import { useFrame } from "@react-three/fiber";
 import type { ReactNode } from "react";
 import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { buildLetterGeometry, type LetterId } from "./letters";
+import { getLetterGeometry, type LetterId } from "./letters";
 import { ScalarSpring } from "./spring";
 
 export interface LetterHandle {
@@ -26,14 +26,17 @@ const DROP_FROM = 3.6;
 
 const Letter = forwardRef<LetterHandle, LetterProps>(function Letter(
   { id, x, material, mountDelay = 0, instantEntry = false, extra, onInteract, onPointer },
-  ref
+  ref,
 ) {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const pressedRef = useRef(false);
   const startedRef = useRef(instantEntry);
 
-  const geometry = useMemo(() => buildLetterGeometry(id), [id]);
+  const geometries = useMemo(() => {
+    const geometry = getLetterGeometry(id);
+    return Array.isArray(geometry) ? geometry : [geometry];
+  }, [id]);
 
   const springs = useMemo(
     () => ({
@@ -148,7 +151,9 @@ const Letter = forwardRef<LetterHandle, LetterProps>(function Letter(
         document.body.style.cursor = "auto";
       }}
     >
-      <mesh geometry={geometry} material={material} castShadow receiveShadow />
+      {geometries.map((geometry, index) => (
+        <mesh key={index} geometry={geometry} material={material} castShadow receiveShadow />
+      ))}
       {extra}
     </group>
   );

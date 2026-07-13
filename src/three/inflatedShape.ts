@@ -126,7 +126,7 @@ export function extrudeInflated(shape: THREE.Shape, depth: number, bevelRatio = 
     bevelSize: bevelThickness * 0.92,
     bevelSegments: segments,
     bevelOffset: 0,
-    curveSegments: 48,
+    curveSegments: 24,
     steps: 1,
   });
   geo.translate(0, 0, -(depth - bevelThickness * 2) / 2 - bevelThickness);

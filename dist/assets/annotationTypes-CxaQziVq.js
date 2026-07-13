@@ -1,0 +1,1 @@
+var e={A:[-.3,1.02,.32],I:[0,1.1,.32],N:[.02,1.02,.32],O:[.3,1.08,.32]};function t(){return{A:null,I:null,N:null,O:null}}export{t as n,e as t};

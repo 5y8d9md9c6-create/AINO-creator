@@ -1,16 +1,19 @@
 import * as THREE from "three";
-import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { buildBar, buildInflatedHole, buildInflatedShape, buildRing, extrudeInflated, type Pt } from "./inflatedShape";
 
 export type LetterId = "A" | "I" | "N" | "O";
+export type LetterGeometry = THREE.BufferGeometry | THREE.BufferGeometry[];
 
 const DEPTH = 0.6;
 const BEVEL_RATIO = 0.5;
 const BULGE = 0.18;
 const RADIUS = 0.16;
+const EXTRUDE_SEGMENTS = 14;
+
+const geometryCache = new Map<LetterId, LetterGeometry>();
 
 function shapeToGeo(shape: THREE.Shape) {
-  return extrudeInflated(shape, DEPTH, BEVEL_RATIO, 28);
+  return extrudeInflated(shape, DEPTH, BEVEL_RATIO, EXTRUDE_SEGMENTS);
 }
 
 function letterI(): THREE.BufferGeometry {
@@ -18,30 +21,31 @@ function letterI(): THREE.BufferGeometry {
   return shapeToGeo(bar);
 }
 
-function letterN(): THREE.BufferGeometry {
-  const leftLeg = buildBar([-0.36, -0.68], [-0.36, 0.68], { width: 0.32, bulge: BULGE, radius: RADIUS });
-  const rightLeg = buildBar([0.36, -0.68], [0.36, 0.68], { width: 0.32, bulge: BULGE, radius: RADIUS });
-  const diagonal = buildBar([-0.4, 0.66], [0.4, -0.66], { width: 0.34, bulge: BULGE, radius: RADIUS });
-  const geos = [leftLeg, rightLeg, diagonal].map(shapeToGeo);
-  return mergeGeometries(geos) as THREE.BufferGeometry;
+function letterN(): THREE.BufferGeometry[] {
+  const leftLeg = shapeToGeo(
+    buildBar([-0.36, -0.68], [-0.36, 0.68], { width: 0.3, bulge: BULGE, radius: RADIUS }),
+  );
+  const rightLeg = shapeToGeo(
+    buildBar([0.36, -0.68], [0.36, 0.68], { width: 0.3, bulge: BULGE, radius: RADIUS }),
+  );
+  const diagonal = shapeToGeo(
+    buildBar([-0.34, 0.62], [0.34, -0.62], { width: 0.24, bulge: BULGE * 0.85, radius: RADIUS * 0.9 }),
+  );
+  return [leftLeg, rightLeg, diagonal];
 }
 
 function letterA(): THREE.BufferGeometry {
-  // A single continuous silhouette (outer boundary trace clockwise) with one
-  // enclosed hole for the counter. The leg-gap at the bottom is a concave
-  // notch in the outer boundary rather than a hole, since it opens onto the
-  // exterior background below the letter.
   const outer: Pt[] = [
-    [-0.17, 0.68], // apex cap, left
-    [0.17, 0.68], // apex cap, right
-    [0.56, -0.58], // right outer edge
-    [0.63, -0.7], // right foot outer-bottom
-    [0.29, -0.76], // right foot inner-bottom
-    [0.25, 0.02], // right leg inner edge, up to crossbar underside
-    [-0.25, 0.02], // crossbar underside, straight across
-    [-0.29, -0.76], // left leg inner edge, down to foot
-    [-0.63, -0.7], // left foot inner-bottom
-    [-0.56, -0.58], // left foot outer-bottom
+    [-0.17, 0.68],
+    [0.17, 0.68],
+    [0.56, -0.58],
+    [0.63, -0.7],
+    [0.29, -0.76],
+    [0.25, 0.02],
+    [-0.25, 0.02],
+    [-0.29, -0.76],
+    [-0.63, -0.7],
+    [-0.56, -0.58],
   ];
   const outerRadii = [0.22, 0.22, 0.1, 0.16, 0.16, 0.1, 0.1, 0.16, 0.16, 0.1];
   const outerBulges = [0.32, 0.05, 0.03, 0.08, 0.06, -0.14, 0.06, 0.08, 0.03, 0.05];
@@ -63,7 +67,7 @@ function letterO(): THREE.BufferGeometry {
   return shapeToGeo(ring);
 }
 
-export function buildLetterGeometry(id: LetterId): THREE.BufferGeometry {
+function buildLetterGeometry(id: LetterId): LetterGeometry {
   switch (id) {
     case "I":
       return letterI();
@@ -74,6 +78,14 @@ export function buildLetterGeometry(id: LetterId): THREE.BufferGeometry {
     case "O":
       return letterO();
   }
+}
+
+export function getLetterGeometry(id: LetterId): LetterGeometry {
+  const cached = geometryCache.get(id);
+  if (cached) return cached;
+  const geometry = buildLetterGeometry(id);
+  geometryCache.set(id, geometry);
+  return geometry;
 }
 
 export const LETTER_WIDTHS: Record<LetterId, number> = {
@@ -98,5 +110,4 @@ export function computeLayout(gap = 0.13): { id: LetterId; x: number }[] {
   return layout;
 }
 
-// silence unused-type warning in strict builds while keeping the export for callers
 export type { Pt };

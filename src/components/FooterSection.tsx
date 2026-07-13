@@ -25,6 +25,7 @@ import {
 } from "../data/footer";
 import FooterBrandSymbol from "./FooterBrandSymbol";
 import { PaperPlaneGraphic } from "./PaperPlaneContact";
+import { getFlightMs } from "../lib/motionTiming";
 import "./FooterSection.css";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -436,14 +437,16 @@ function FooterPlayAgain({ onDiscover }: { onDiscover: () => void }) {
       x: rect.left + rect.width * 0.5,
       y: rect.top + rect.height * 0.45,
     });
-    window.setTimeout(() => setLaunching(false), 1600);
+    window.setTimeout(() => setLaunching(false), getFlightMs() + 120);
   }, [busy, launchReturnHero, reduceMotion]);
 
   const handleClick = useCallback(() => {
     if (busy) return;
     onDiscover();
 
-    if (reduceMotion || window.matchMedia("(hover: hover)").matches) {
+    const touchPrimary = window.matchMedia("(hover: none)").matches;
+
+    if (reduceMotion || touchPrimary || window.matchMedia("(hover: hover)").matches) {
       fireReturn();
       return;
     }

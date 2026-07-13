@@ -9,13 +9,6 @@ export default defineConfig({
     target: "es2020",
     sourcemap: false,
     cssMinify: true,
-    modulePreload: {
-      resolveDependencies(_filename, deps) {
-        return deps.filter(
-          (dep) => !dep.includes("three-vendor") && !dep.includes("motion-vendor"),
-        );
-      },
-    },
     rollupOptions: {
       output: {
         manualChunks(id) {

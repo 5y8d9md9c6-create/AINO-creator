@@ -1,16 +1,21 @@
-import { useRef } from "react";
+import { Suspense, lazy, useRef } from "react";
 import { createAnnotationPositions } from "../three/annotationTypes";
-import AinoAnnotations from "../three/AinoAnnotations";
-import AinoScene from "../three/AinoScene";
 import "./AinoSection.css";
+
+const AinoAnnotations = lazy(() => import("../three/AinoAnnotations"));
+const AinoScene = lazy(() => import("../three/AinoScene"));
+
+void import("../three/AinoScene");
 
 export default function AinoSection() {
   const posRef = useRef(createAnnotationPositions());
 
   return (
     <div className="aino-section">
-      <AinoScene posRef={posRef} />
-      <AinoAnnotations posRef={posRef} />
+      <Suspense fallback={null}>
+        <AinoScene posRef={posRef} />
+        <AinoAnnotations posRef={posRef} />
+      </Suspense>
     </div>
   );
 }

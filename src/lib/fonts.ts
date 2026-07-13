@@ -23,35 +23,15 @@ function runWhenIdle(task: () => void, timeout: number) {
 }
 
 export function scheduleWebFonts() {
-  const injectCritical = () => injectStylesheet("web-fonts-critical", CRITICAL_FONT_STYLESHEET);
+  injectStylesheet("web-fonts-critical", CRITICAL_FONT_STYLESHEET);
 
   const injectExtended = () => injectStylesheet("web-fonts-extended", EXTENDED_FONT_STYLESHEET);
-
-  const scheduleCritical = () => runWhenIdle(injectCritical, 8000);
-
-  const scheduleExtended = () => {
-    runWhenIdle(injectExtended, 14000);
-  };
 
   const onFirstScroll = () => {
     injectExtended();
     window.removeEventListener("scroll", onFirstScroll);
   };
 
-  if (document.readyState === "complete") {
-    scheduleCritical();
-    window.addEventListener("scroll", onFirstScroll, { once: true, passive: true });
-    scheduleExtended();
-    return;
-  }
-
-  window.addEventListener(
-    "load",
-    () => {
-      scheduleCritical();
-      window.addEventListener("scroll", onFirstScroll, { once: true, passive: true });
-      scheduleExtended();
-    },
-    { once: true },
-  );
+  window.addEventListener("scroll", onFirstScroll, { once: true, passive: true });
+  runWhenIdle(injectExtended, 6000);
 }

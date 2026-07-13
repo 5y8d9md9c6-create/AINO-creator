@@ -1,7 +1,6 @@
 import { Suspense, lazy, useEffect } from "react";
 import { applyDocumentSeo, applyHomeSeo, applyWorkSeo } from "./lib/seo";
 import { SITE_NAME } from "./data/seo";
-import AinoSection from "./components/AinoSection";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import HeroAtmosphere from "./components/HeroAtmosphere";
@@ -16,6 +15,7 @@ import "./pages/WorkDetailPage.css";
 import "./components/HeroArea.css";
 
 const AboutSection = lazy(() => import("./components/AboutSection"));
+const AinoSection = lazy(() => import("./components/AinoSection"));
 const WorksSection = lazy(() => import("./components/WorksSection"));
 const ProcessSection = lazy(() => import("./components/ProcessSection"));
 const PlanSection = lazy(() => import("./components/PlanSection"));
@@ -87,7 +87,9 @@ function App() {
           <Header />
           <div className="hero-area__stage">
             <Hero />
-            <AinoSection />
+            <Suspense fallback={null}>
+              <AinoSection />
+            </Suspense>
           </div>
         </div>
         <DeferredMount anchorId="about" minHeight="80vh">
@@ -132,13 +134,9 @@ function App() {
             </MotionBoundary>
           </Suspense>
         </DeferredMount>
-        <DeferredMount minHeight="40vh" rootMargin="160px 0px">
-          <Suspense fallback={null}>
-            <MotionBoundary>
-              <PaperPlaneFlightLayer />
-            </MotionBoundary>
-          </Suspense>
-        </DeferredMount>
+        <Suspense fallback={null}>
+          <PaperPlaneFlightLayer />
+        </Suspense>
         <div className="grain-overlay" aria-hidden="true" />
       </main>
     </ContactPlaneProvider>
