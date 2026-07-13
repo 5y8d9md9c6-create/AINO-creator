@@ -6,8 +6,6 @@ import { scheduleWebFonts } from "./lib/fonts.ts";
 
 const ShyScrollbar = lazy(() => import("./components/ShyScrollbar.tsx"));
 
-void import("./components/AinoSection.tsx");
-
 scheduleWebFonts();
 
 createRoot(document.getElementById("root")!).render(

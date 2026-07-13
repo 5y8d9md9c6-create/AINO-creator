@@ -22,7 +22,7 @@ interface LetterProps {
   onPointer?: (hovering: boolean) => void;
 }
 
-const DROP_FROM = 3.6;
+const DROP_FROM = 2.5;
 
 const Letter = forwardRef<LetterHandle, LetterProps>(function Letter(
   { id, x, material, mountDelay = 0, instantEntry = false, extra, onInteract, onPointer },
@@ -108,8 +108,9 @@ const Letter = forwardRef<LetterHandle, LetterProps>(function Letter(
     const rotStiffness = id === "O" ? 22 : id === "N" ? 46 : 70;
     const rotDamping = id === "O" ? 2.3 : id === "N" ? 3.6 : 3.4;
 
-    const posYStiffness = pressedRef.current ? 150 : 92;
-    const posYDamping = pressedRef.current ? 15 : 13.5;
+    const entering = startedRef.current && Math.abs(springs.posY.value - springs.posY.target) > 0.02;
+    const posYStiffness = pressedRef.current ? 150 : entering ? 168 : 92;
+    const posYDamping = pressedRef.current ? 15 : entering ? 20 : 13.5;
 
     springs.posY.update(dt, posYStiffness, posYDamping);
     springs.posX.update(dt, rotStiffness, rotDamping + 1.2);

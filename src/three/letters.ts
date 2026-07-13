@@ -8,7 +8,7 @@ const DEPTH = 0.6;
 const BEVEL_RATIO = 0.5;
 const BULGE = 0.18;
 const RADIUS = 0.16;
-const EXTRUDE_SEGMENTS = 14;
+const EXTRUDE_SEGMENTS = 10;
 
 const geometryCache = new Map<LetterId, LetterGeometry>();
 

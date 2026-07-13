@@ -6,6 +6,7 @@ import * as THREE from "three";
 import Letter, { type LetterHandle } from "./Letter";
 import { computeLayout, LETTER_ORDER, LETTER_WIDTHS, type LetterId } from "./letters";
 import { ANCHOR_OFFSETS, type AnchorKey, type AnnotationPositions } from "./annotationTypes";
+import { HERO_ENHANCED_DELAY_MS } from "../lib/heroTiming";
 
 export type { AnchorKey, AnnotationPositions } from "./annotationTypes";
 export { createAnnotationPositions } from "./annotationTypes";
@@ -190,7 +191,7 @@ function useEnhancedScene() {
   const [enhanced, setEnhanced] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setEnhanced(true), 1200);
+    const timer = window.setTimeout(() => setEnhanced(true), HERO_ENHANCED_DELAY_MS);
     return () => window.clearTimeout(timer);
   }, []);
 

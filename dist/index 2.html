@@ -70,6 +70,17 @@
       }
     </script>
     <style>
+      .hero-bootstrap {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .hero-bootstrap__stage {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: clamp(380px, 46vh, 560px);
+      }
       .hero-shell {
         padding: clamp(30px, 5vw, 58px) clamp(24px, 5vw, 64px) 0;
         max-width: 640px;
@@ -87,21 +98,40 @@
         font-size: clamp(15px, 1.3vw, 17.5px);
         line-height: 1.82;
       }
+      .hero-bootstrap__aino {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: clamp(280px, 40vh, 480px);
+        font-family: "Hiragino Maru Gothic Pro", "Hiragino Sans", sans-serif;
+        font-weight: 700;
+        font-size: clamp(72px, 18vw, 140px);
+        letter-spacing: 0.1em;
+        color: #1e1b17;
+        opacity: 0.92;
+        transform: translateY(4%);
+        user-select: none;
+        pointer-events: none;
+      }
     </style>
-    <script type="module" crossorigin src="./assets/index-DLD_zRBW.js"></script>
+    <script type="module" crossorigin src="./assets/index-75Li-ESE.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-CNC7AqOf.js">
-    <link rel="modulepreload" crossorigin href="./assets/motion-vendor-IBicvNb7.js">
-    <link rel="modulepreload" crossorigin href="./assets/three-vendor-C8_t1kEj.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-c55wGtoN.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-O3fW-bp8.css">
   </head>
   <body>
     <div id="root">
-      <div class="hero-shell" aria-label="AINO creator">
-        <h1 class="hero-shell__title">ちょっと 遊んでみて。</h1>
-        <p class="hero-shell__desc">
-          アイデアを、カタチにして、<br />
-          ワクワクに変える人。
-        </p>
+      <div class="hero-bootstrap">
+        <div class="hero-bootstrap__stage">
+          <div class="hero-shell" aria-label="AINO creator">
+            <h1 class="hero-shell__title">ちょっと 遊んでみて。</h1>
+            <p class="hero-shell__desc">
+              アイデアを、カタチにして、<br />
+              ワクワクに変える人。
+            </p>
+          </div>
+          <div class="hero-bootstrap__aino" aria-hidden="true">AINO</div>
+        </div>
       </div>
     </div>
   </body>
