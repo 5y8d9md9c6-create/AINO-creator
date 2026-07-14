@@ -5,7 +5,6 @@ import {
   CONTACT_BODY,
   CONTACT_BRIDGE,
   CONTACT_BUDGETS,
-  CONTACT_EMAIL,
   CONTACT_FORM,
   CONTACT_REASSURANCE,
   CONTACT_TAGLINE,
@@ -44,33 +43,7 @@ type FormState = {
   timeline: string | null;
 };
 
-function labelForOptions<T extends { id: string; label: string }>(options: readonly T[], ids: string[]) {
-  return options.filter((option) => ids.includes(option.id)).map((option) => option.label);
-}
 
-function buildMailto(form: FormState) {
-  const subject = encodeURIComponent("AINO creator お便り");
-  const topicLabels = labelForOptions(CONTACT_TOPICS, form.topics);
-  const budgetLabel = CONTACT_BUDGETS.find((item) => item.id === form.budget)?.label;
-  const timelineLabel = CONTACT_TIMELINES.find((item) => item.id === form.timeline)?.label;
-
-  const lines = [
-    `${form.name} さんより`,
-    form.email,
-    "",
-    "【ご相談内容】",
-    topicLabels.length > 0 ? topicLabels.join("、") : "（未選択）",
-    "",
-    budgetLabel ? `【ご予算】${budgetLabel}` : null,
-    timelineLabel ? `【希望時期】${timelineLabel}` : null,
-    budgetLabel || timelineLabel ? "" : null,
-    "【メッセージ】",
-    form.message,
-  ].filter((line): line is string => line !== null);
-
-  const body = encodeURIComponent(lines.join("\n"));
-  return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-}
 
 function ContactField({
   step,
@@ -199,6 +172,11 @@ export default function ContactSection() {
   const [activeField, setActiveField] = useState<string | null>(null);
   const [topicError, setTopicError] = useState<string | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [submittingStatus, setSubmittingStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState("");
+  const pendingSubmissionRef = useRef<Promise<Response> | null>(null);
+
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
@@ -209,6 +187,7 @@ export default function ContactSection() {
   });
 
   const submitting = phase === "flying" && flightIntent === "submit";
+  const isPending = submitting || submittingStatus === "sending";
   const arrivedByPlane = landedViaPlane && phase === "landed";
   const messageFocused = activeField === "message";
   const fillProgress =
@@ -238,7 +217,27 @@ export default function ContactSection() {
       const envelopeDelay = reduceMotion ? 80 : getEnvelopeToFormMs();
       window.setTimeout(() => setFormAfterEnvelope(true), envelopeDelay);
     };
-    const onSent = () => setSent(true);
+    const onSent = async () => {
+      if (pendingSubmissionRef.current) {
+        try {
+          const res = await pendingSubmissionRef.current;
+          if (res.ok) {
+            setSent(true);
+            setSubmittingStatus("success");
+          } else {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || "送信に失敗しました。");
+          }
+        } catch (err: any) {
+          setSubmittingStatus("error");
+          setErrorMessage(err.message || "送信に失敗しました。時間をおいて再度お試しください。");
+        } finally {
+          pendingSubmissionRef.current = null;
+        }
+      } else {
+        setSent(true);
+      }
+    };
     window.addEventListener("aino:contact-plane-landed", onLanded);
     window.addEventListener("aino:contact-submit-sent", onSent);
     return () => {
@@ -258,6 +257,8 @@ export default function ContactSection() {
     if (phase === "flying" && flightIntent === "navigate") {
       setFormAfterEnvelope(false);
       setSent(false);
+      setSubmittingStatus("idle");
+      setErrorMessage(null);
     }
   }, [phase, flightIntent]);
 
@@ -278,15 +279,54 @@ export default function ContactSection() {
       }
       setTopicError(null);
       if (!formRef.current?.reportValidity()) return;
-      const mailto = buildMailto(form);
-      if (reduceMotion) {
-        window.location.href = mailto;
+
+      if (honeypot) {
         setSent(true);
+        setSubmittingStatus("success");
         return;
       }
-      launchSubmit(origin, mailto);
+
+      setSubmittingStatus("sending");
+      setErrorMessage(null);
+
+      const requestPromise = fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          topics: form.topics,
+          message: form.message,
+          budget: form.budget,
+          timeline: form.timeline,
+          website: honeypot,
+        }),
+      });
+
+      if (reduceMotion) {
+        requestPromise
+          .then(async (res) => {
+            if (res.ok) {
+              setSent(true);
+              setSubmittingStatus("success");
+            } else {
+              const data = await res.json().catch(() => ({}));
+              throw new Error(data.message || "送信に失敗しました。");
+            }
+          })
+          .catch((err) => {
+            setSubmittingStatus("error");
+            setErrorMessage(err.message || "送信に失敗しました。");
+          });
+        return;
+      }
+
+      launchSubmit(origin, "");
+      pendingSubmissionRef.current = requestPromise;
     },
-    [form, launchSubmit, reduceMotion],
+    [form, launchSubmit, reduceMotion, honeypot],
   );
 
   const messagePlaceholder =
@@ -421,6 +461,7 @@ export default function ContactSection() {
                         name="name"
                         autoComplete="name"
                         required
+                        disabled={isPending}
                         value={form.name}
                         placeholder={CONTACT_FORM.namePlaceholder}
                         onFocus={() => setActiveField("name")}
@@ -438,6 +479,7 @@ export default function ContactSection() {
                         name="email"
                         autoComplete="email"
                         required
+                        disabled={isPending}
                         value={form.email}
                         placeholder={CONTACT_FORM.emailPlaceholder}
                         onFocus={() => setActiveField("email")}
@@ -478,6 +520,7 @@ export default function ContactSection() {
                       <textarea
                         name="message"
                         required
+                        disabled={isPending}
                         rows={6}
                         value={form.message}
                         placeholder={messagePlaceholder}
@@ -527,10 +570,33 @@ export default function ContactSection() {
                       />
                     </ContactField>
 
+                    <div style={{ position: "absolute", width: 0, height: 0, opacity: 0, overflow: "hidden", pointerEvents: "none" }} aria-hidden="true">
+                      <input
+                        type="text"
+                        name="website"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={honeypot}
+                        onChange={(event) => setHoneypot(event.target.value)}
+                      />
+                    </div>
+
+                    {submittingStatus === "sending" && (
+                      <motion.p className="contact-form__status contact-form__status--sending" role="status" variants={formField}>
+                        送信中...
+                      </motion.p>
+                    )}
+
+                    {submittingStatus === "error" && errorMessage && (
+                      <motion.p className="contact-form__status contact-form__status--error" role="alert" variants={formField}>
+                        ⚠️ {errorMessage}
+                      </motion.p>
+                    )}
+
                     <motion.div variants={formField}>
                       <ContactSubmitButton
                         reduceMotion={reduceMotion}
-                        disabled={submitting}
+                        disabled={isPending}
                         fillProgress={fillProgress}
                         onLaunch={handleLaunchSubmit}
                       />

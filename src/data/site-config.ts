@@ -15,7 +15,7 @@ export const SITE_CONFIG = {
    * お問い合わせフォーム mailto 送信先
    * ContactSection → buildMailto()
    */
-  contactEmail: "hello@aino-creator.com",
+  contactEmail: "hello@ainocreator.jp",
 
   /**
    * Footer Mail リンク・JSON-LD email
