@@ -47,10 +47,35 @@ export const onRequestPost: PagesFunction<{ RESEND_API_KEY: string }> = async (c
       });
     }
 
+    // Mapping dictionaries for Japanese labels
+    const TOPIC_MAP: Record<string, string> = {
+      website: "ホームページ制作",
+      lp: "LP制作",
+      design: "デザイン制作",
+      app: "アプリ開発",
+      maintenance: "保守・運用",
+      undecided: "まだ決まっていない",
+    };
+
+    const BUDGET_MAP: Record<string, string> = {
+      under5: "～5万円",
+      "5to10": "5〜10万円",
+      "10to30": "10〜30万円",
+      over30: "30万円以上",
+      "budget-undecided": "まだ決まっていない",
+    };
+
+    const TIMELINE_MAP: Record<string, string> = {
+      asap: "できるだけ早く",
+      "1-2months": "1〜2ヶ月以内",
+      halfyear: "半年以内",
+      "timeline-undecided": "未定",
+    };
+
     // Construct Email Content
-    const topicText = topics.join("、");
-    const budgetText = budget || "未選択";
-    const timelineText = timeline || "未選択";
+    const topicText = topics.map((t) => TOPIC_MAP[t] || t).join("、");
+    const budgetText = budget ? (BUDGET_MAP[budget] || budget) : "未選択";
+    const timelineText = timeline ? (TIMELINE_MAP[timeline] || timeline) : "未選択";
 
     const emailBody = `
 AINO creator お問い合わせフォームより新しいお便りが届きました。
