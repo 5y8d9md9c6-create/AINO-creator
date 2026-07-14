@@ -1,4 +1,4 @@
-import { BRAND_EMAIL, INSTAGRAM_URL } from "./site-config";
+import { BRAND_EMAIL, INSTAGRAM_URL, X_URL } from "./site-config";
 
 export const FOOTER_MAIN = "おわり、じゃない。";
 export const FOOTER_SUB = "また、何か面白いことを。";
@@ -46,6 +46,8 @@ export const FOOTER_AINO_HINTS = {
 
 export const FOOTER_LINKS = [
   { id: "instagram", label: "Instagram", href: INSTAGRAM_URL, external: true },
+  { id: "x", label: "X", href: X_URL, external: true },
+  // { id: "github", label: "GitHub", href: "https://github.com/...", external: true },
   { id: "mail", label: "Mail", href: `mailto:${FOOTER_BRAND_EMAIL}`, external: true },
   { id: "works", label: "Works", href: "#works" },
   { id: "plan", label: "ご依頼", href: "#plan" },
