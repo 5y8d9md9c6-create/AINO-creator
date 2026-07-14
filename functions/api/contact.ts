@@ -79,7 +79,7 @@ ${message}
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "hello@ainocreator.jp",
+        from: "AINO creator <contact@send.ainocreator.jp>",
         to: "hello@ainocreator.jp",
         subject: `【お問い合わせ】${name}様より`,
         text: emailBody,
