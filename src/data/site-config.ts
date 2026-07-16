@@ -25,6 +25,9 @@ export const SITE_CONFIG = {
 
   /** Instagram プロフィールURL（開設後に差し替え） */
   instagramUrl: "https://www.instagram.com/",
+
+  /** Google Analytics 4 測定ID（index.html の gtag と揃える） */
+  gaMeasurementId: "G-YF1170W0SV",
 } as const;
 
 /**
@@ -32,7 +35,7 @@ export const SITE_CONFIG = {
  * SITE_CONFIG 更新後、手動で同じ値に揃えること。
  */
 export const MANUAL_SYNC_FILES = [
-  "index.html", // canonical, OGP, JSON-LD
+  "index.html", // canonical, OGP, JSON-LD, GA4 gtag
   "public/robots.txt", // Sitemap URL
   "public/sitemap.xml", // 全 <loc>
 ] as const;
@@ -43,3 +46,4 @@ export const SITE_DISPLAY_HOST = SITE_CONFIG.siteDisplayHost;
 export const CONTACT_EMAIL = SITE_CONFIG.contactEmail;
 export const BRAND_EMAIL = SITE_CONFIG.brandEmail;
 export const INSTAGRAM_URL = SITE_CONFIG.instagramUrl;
+export const GA_MEASUREMENT_ID = SITE_CONFIG.gaMeasurementId;

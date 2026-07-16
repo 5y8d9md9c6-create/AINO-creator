@@ -10,6 +10,7 @@ import MotionBoundary from "./lib/MotionBoundary";
 import { ContactPlaneProvider } from "./context/ContactPlaneContext";
 import { PaperPlaneFlightLayer } from "./components/PaperPlaneContact";
 import { useWorkRoute } from "./hooks/useWorkRoute";
+import { usePageAnalytics } from "./hooks/usePageAnalytics";
 import { getWorkById, isExternalWork } from "./data/works";
 import { navigateToWorksIndex } from "./lib/navigation";
 import WorkDetailPage from "./pages/WorkDetailPage";
@@ -62,6 +63,9 @@ function App() {
     }
     applyHomeSeo();
   }, [work, workId]);
+
+  // SEO effect の後に宣言し、更新後の title で page_view を送る
+  usePageAnalytics(workId);
 
   if (workId) {
     if (!work) return <WorkNotFound />;
