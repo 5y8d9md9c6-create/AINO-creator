@@ -1,22 +1,21 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { applyDocumentSeo, applyHomeSeo, applyWorkSeo } from "./lib/seo";
 import { SITE_NAME } from "./data/seo";
-import AinoSection from "./components/AinoSection";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import HeroAtmosphere from "./components/HeroAtmosphere";
 import DeferredMount from "./components/DeferredMount";
-import MotionBoundary from "./lib/MotionBoundary";
 import { ContactPlaneProvider } from "./context/ContactPlaneContext";
 import { PaperPlaneFlightLayer } from "./components/PaperPlaneContact";
 import { useWorkRoute } from "./hooks/useWorkRoute";
 import { usePageAnalytics } from "./hooks/usePageAnalytics";
 import { getWorkById, isExternalWork } from "./data/works";
 import { navigateToWorksIndex } from "./lib/navigation";
-import WorkDetailPage from "./pages/WorkDetailPage";
-import "./pages/WorkDetailPage.css";
 import "./components/HeroArea.css";
 
+const AinoSection = lazy(() => import("./components/AinoSection"));
+const MotionBoundary = lazy(() => import("./lib/MotionBoundary"));
+const WorkDetailPage = lazy(() => import("./pages/WorkDetailPage"));
 const AboutSection = lazy(() => import("./components/AboutSection"));
 const WorksSection = lazy(() => import("./components/WorksSection"));
 const ProcessSection = lazy(() => import("./components/ProcessSection"));
@@ -67,6 +66,24 @@ function App() {
   // SEO effect の後に宣言し、更新後の title で page_view を送る
   usePageAnalytics(workId);
 
+  const [load3D, setLoad3D] = useState(false);
+
+  useEffect(() => {
+    if (workId) return;
+    const run = () => {
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(() => setLoad3D(true));
+      } else {
+        setTimeout(() => setLoad3D(true), 200);
+      }
+    };
+    if (document.readyState === "complete") {
+      run();
+    } else {
+      window.addEventListener("load", run, { once: true });
+    }
+  }, [workId]);
+
   if (workId) {
     if (!work) return <WorkNotFound />;
     if (isExternalWork(work)) return <ExternalWorkRedirect url={work.url!} />;
@@ -87,7 +104,11 @@ function App() {
           <Header />
           <div className="hero-area__stage">
             <Hero />
-            <AinoSection />
+            {load3D && (
+              <Suspense fallback={null}>
+                <AinoSection />
+              </Suspense>
+            )}
           </div>
         </div>
         <DeferredMount anchorId="about" minHeight="80vh">
@@ -132,9 +153,11 @@ function App() {
             </MotionBoundary>
           </Suspense>
         </DeferredMount>
-        <MotionBoundary>
-          <PaperPlaneFlightLayer />
-        </MotionBoundary>
+        <Suspense fallback={null}>
+          <MotionBoundary>
+            <PaperPlaneFlightLayer />
+          </MotionBoundary>
+        </Suspense>
         <div className="grain-overlay" aria-hidden="true" />
       </main>
     </ContactPlaneProvider>
