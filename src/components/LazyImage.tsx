@@ -15,6 +15,8 @@ function webpCandidate(src: string): string | null {
   return src.replace(/\.png$/, ".webp");
 }
 
+const PLACEHOLDER_SRC = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
 export default function LazyImage({
   src,
   alt,
@@ -64,7 +66,7 @@ export default function LazyImage({
         {visible ? <source srcSet={webp} type="image/webp" sizes={sizes} /> : null}
         <img
           {...shared}
-          src={visible ? src : undefined}
+          src={visible ? src : PLACEHOLDER_SRC}
         />
       </picture>
     );
@@ -73,7 +75,7 @@ export default function LazyImage({
   return (
     <img
       {...shared}
-      src={visible ? src : undefined}
+      src={visible ? src : PLACEHOLDER_SRC}
     />
   );
 }
