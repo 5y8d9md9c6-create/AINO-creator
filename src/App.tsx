@@ -13,8 +13,9 @@ import { getWorkById, isExternalWork } from "./data/works";
 import { navigateToWorksIndex } from "./lib/navigation";
 import "./components/HeroArea.css";
 
+import MotionBoundary from "./lib/MotionBoundary";
+
 const AinoSection = lazy(() => import("./components/AinoSection"));
-const MotionBoundary = lazy(() => import("./lib/MotionBoundary"));
 const WorkDetailPage = lazy(() => import("./pages/WorkDetailPage"));
 const AboutSection = lazy(() => import("./components/AboutSection"));
 const WorksSection = lazy(() => import("./components/WorksSection"));
@@ -70,17 +71,12 @@ function App() {
 
   useEffect(() => {
     if (workId) return;
-    const run = () => {
+    if (typeof window !== "undefined") {
       if ("requestIdleCallback" in window) {
         window.requestIdleCallback(() => setLoad3D(true));
       } else {
-        setTimeout(() => setLoad3D(true), 200);
+        setTimeout(() => setLoad3D(true), 50);
       }
-    };
-    if (document.readyState === "complete") {
-      run();
-    } else {
-      window.addEventListener("load", run, { once: true });
     }
   }, [workId]);
 
@@ -153,11 +149,9 @@ function App() {
             </MotionBoundary>
           </Suspense>
         </DeferredMount>
-        <Suspense fallback={null}>
-          <MotionBoundary>
-            <PaperPlaneFlightLayer />
-          </MotionBoundary>
-        </Suspense>
+        <MotionBoundary>
+          <PaperPlaneFlightLayer />
+        </MotionBoundary>
         <div className="grain-overlay" aria-hidden="true" />
       </main>
     </ContactPlaneProvider>

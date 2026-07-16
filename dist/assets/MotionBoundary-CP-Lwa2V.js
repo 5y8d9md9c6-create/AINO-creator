@@ -1,2 +1,0 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./motion-features-B8TmeJp5.js","./rolldown-runtime-CNC7AqOf.js"])))=>i.map(i=>d[i]);
-import{d as e,m as t}from"./motion-vendor-IBicvNb7.js";import{t as n}from"./index-C8MSnjSs.js";var r=t();function i({children:t}){return(0,r.jsx)(e,{strict:!0,features:()=>n(()=>import(`./motion-features-B8TmeJp5.js`).then(e=>e.default),__vite__mapDeps([0,1]),import.meta.url),children:t})}export{i as default};

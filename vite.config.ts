@@ -9,14 +9,6 @@ export default defineConfig({
     target: "es2020",
     sourcemap: false,
     cssMinify: true,
-    modulePreload: {
-      resolveDependencies(_filename, deps) {
-        // Avoid preloading large vendor chunks on page load
-        return deps.filter(
-          (dep) => !dep.includes("three-vendor") && !dep.includes("motion-vendor")
-        );
-      },
-    },
     rollupOptions: {
       output: {
         manualChunks(id) {
