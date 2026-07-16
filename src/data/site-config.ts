@@ -13,9 +13,8 @@ export const SITE_CONFIG = {
 
   /**
    * お問い合わせフォーム mailto 送信先
-   * ContactSection → buildMailto()
    */
-  contactEmail: "hello@aino-creator.com",
+  contactEmail: "hello@ainocreator.jp",
 
   /**
    * Footer Mail リンク・JSON-LD email
@@ -23,8 +22,11 @@ export const SITE_CONFIG = {
    */
   brandEmail: "hello@ainocreator.jp",
 
-  /** Instagram プロフィールURL（開設後に差し替え） */
-  instagramUrl: "https://www.instagram.com/",
+  /** Instagram プロフィールURL */
+  instagramUrl: "https://instagram.com/ainocreator",
+
+  /** X プロフィールURL */
+  xUrl: "https://x.com/ainocreator",
 
   /** Google Analytics 4 測定ID（index.html の gtag と揃える） */
   gaMeasurementId: "G-YF1170W0SV",
@@ -46,4 +48,5 @@ export const SITE_DISPLAY_HOST = SITE_CONFIG.siteDisplayHost;
 export const CONTACT_EMAIL = SITE_CONFIG.contactEmail;
 export const BRAND_EMAIL = SITE_CONFIG.brandEmail;
 export const INSTAGRAM_URL = SITE_CONFIG.instagramUrl;
+export const X_URL = SITE_CONFIG.xUrl;
 export const GA_MEASUREMENT_ID = SITE_CONFIG.gaMeasurementId;

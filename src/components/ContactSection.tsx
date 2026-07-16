@@ -5,7 +5,6 @@ import {
   CONTACT_BODY,
   CONTACT_BRIDGE,
   CONTACT_BUDGETS,
-  CONTACT_EMAIL,
   CONTACT_FORM,
   CONTACT_REASSURANCE,
   CONTACT_TAGLINE,
@@ -43,34 +42,6 @@ type FormState = {
   budget: string | null;
   timeline: string | null;
 };
-
-function labelForOptions<T extends { id: string; label: string }>(options: readonly T[], ids: string[]) {
-  return options.filter((option) => ids.includes(option.id)).map((option) => option.label);
-}
-
-function buildMailto(form: FormState) {
-  const subject = encodeURIComponent("AINO creator お便り");
-  const topicLabels = labelForOptions(CONTACT_TOPICS, form.topics);
-  const budgetLabel = CONTACT_BUDGETS.find((item) => item.id === form.budget)?.label;
-  const timelineLabel = CONTACT_TIMELINES.find((item) => item.id === form.timeline)?.label;
-
-  const lines = [
-    `${form.name} さんより`,
-    form.email,
-    "",
-    "【ご相談内容】",
-    topicLabels.length > 0 ? topicLabels.join("、") : "（未選択）",
-    "",
-    budgetLabel ? `【ご予算】${budgetLabel}` : null,
-    timelineLabel ? `【希望時期】${timelineLabel}` : null,
-    budgetLabel || timelineLabel ? "" : null,
-    "【メッセージ】",
-    form.message,
-  ].filter((line): line is string => line !== null);
-
-  const body = encodeURIComponent(lines.join("\n"));
-  return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-}
 
 function ContactField({
   step,
@@ -207,9 +178,13 @@ export default function ContactSection() {
     budget: null,
     timeline: null,
   });
+  const [honeypot, setHoneypot] = useState("");
+  const [submittingStatus, setSubmittingStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const submitting = phase === "flying" && flightIntent === "submit";
   const arrivedByPlane = landedViaPlane && phase === "landed";
+  const isPending = submitting || submittingStatus === "sending";
   const messageFocused = activeField === "message";
   const fillProgress =
     (Number(form.name.trim().length > 0) +
@@ -258,6 +233,7 @@ export default function ContactSection() {
     if (phase === "flying" && flightIntent === "navigate") {
       setFormAfterEnvelope(false);
       setSent(false);
+      setSubmittingStatus("idle");
     }
   }, [phase, flightIntent]);
 
@@ -278,15 +254,45 @@ export default function ContactSection() {
       }
       setTopicError(null);
       if (!formRef.current?.reportValidity()) return;
-      const mailto = buildMailto(form);
+
+      setErrorMessage("");
+      setSubmittingStatus("sending");
+
+      const requestPromise = fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...form,
+          website: honeypot,
+        }),
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "送信エラーが発生しました。");
+          }
+          return res.json();
+        })
+        .then(() => {
+          setSubmittingStatus("success");
+        })
+        .catch((err) => {
+          setSubmittingStatus("error");
+          setErrorMessage(err.message || "送信に失敗しました。");
+        });
+
       if (reduceMotion) {
-        window.location.href = mailto;
-        setSent(true);
+        requestPromise.finally(() => {
+          setSent(true);
+        });
         return;
       }
-      launchSubmit(origin, mailto);
+
+      launchSubmit(origin, "");
     },
-    [form, launchSubmit, reduceMotion],
+    [form, launchSubmit, reduceMotion, honeypot],
   );
 
   const messagePlaceholder =
@@ -421,6 +427,7 @@ export default function ContactSection() {
                         name="name"
                         autoComplete="name"
                         required
+                        disabled={isPending}
                         value={form.name}
                         placeholder={CONTACT_FORM.namePlaceholder}
                         onFocus={() => setActiveField("name")}
@@ -438,6 +445,7 @@ export default function ContactSection() {
                         name="email"
                         autoComplete="email"
                         required
+                        disabled={isPending}
                         value={form.email}
                         placeholder={CONTACT_FORM.emailPlaceholder}
                         onFocus={() => setActiveField("email")}
@@ -462,6 +470,7 @@ export default function ContactSection() {
                         multiple
                         error={topicError ?? undefined}
                         onChange={(topics) => {
+                          if (isPending) return;
                           setForm((current) => ({ ...current, topics }));
                           setTopicError(null);
                           setActiveField("topics");
@@ -478,6 +487,7 @@ export default function ContactSection() {
                       <textarea
                         name="message"
                         required
+                        disabled={isPending}
                         rows={6}
                         value={form.message}
                         placeholder={messagePlaceholder}
@@ -502,6 +512,7 @@ export default function ContactSection() {
                         selected={form.budget ? [form.budget] : []}
                         multiple={false}
                         onChange={(values) => {
+                          if (isPending) return;
                           setForm((current) => ({ ...current, budget: values[0] ?? null }));
                           setActiveField("budget");
                         }}
@@ -521,16 +532,40 @@ export default function ContactSection() {
                         selected={form.timeline ? [form.timeline] : []}
                         multiple={false}
                         onChange={(values) => {
+                          if (isPending) return;
                           setForm((current) => ({ ...current, timeline: values[0] ?? null }));
                           setActiveField("timeline");
                         }}
                       />
                     </ContactField>
 
+                    <div style={{ position: "absolute", width: 0, height: 0, opacity: 0, overflow: "hidden", pointerEvents: "none" }} aria-hidden="true">
+                      <input
+                        type="text"
+                        name="website"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={honeypot}
+                        onChange={(event) => setHoneypot(event.target.value)}
+                      />
+                    </div>
+
+                    {submittingStatus === "sending" && (
+                      <motion.p className="contact-form__status contact-form__status--sending" role="status" variants={formField}>
+                        送信中...
+                      </motion.p>
+                    )}
+
+                    {submittingStatus === "error" && errorMessage && (
+                      <motion.p className="contact-form__status contact-form__status--error" role="alert" variants={formField}>
+                        ⚠️ {errorMessage}
+                      </motion.p>
+                    )}
+
                     <motion.div variants={formField}>
                       <ContactSubmitButton
                         reduceMotion={reduceMotion}
-                        disabled={submitting}
+                        disabled={isPending}
                         fillProgress={fillProgress}
                         onLaunch={handleLaunchSubmit}
                       />
@@ -539,6 +574,41 @@ export default function ContactSection() {
                     </motion.div>
                   ) : null}
                 </AnimatePresence>
+
+                <motion.div
+                  className="contact-sns"
+                  initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.2 }}
+                >
+                  <p className="contact-sns__title">SNSでもお気軽にどうぞ</p>
+                  <div className="contact-sns__links">
+                    <motion.a
+                      href="https://instagram.com/ainocreator"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contact-sns__link contact-sns__link--instagram"
+                      whileHover={{ scale: 1.06, rotate: -1.5, y: -2 }}
+                      whileTap={{ scale: 0.96 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                    >
+                      <span className="contact-sns__icon">📸</span>
+                      <span className="contact-sns__label">Instagram</span>
+                    </motion.a>
+                    <motion.a
+                      href="https://x.com/ainocreator"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contact-sns__link contact-sns__link--x"
+                      whileHover={{ scale: 1.06, rotate: 1.5, y: -2 }}
+                      whileTap={{ scale: 0.96 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                    >
+                      <span className="contact-sns__icon">𝕏</span>
+                      <span className="contact-sns__label">X</span>
+                    </motion.a>
+                  </div>
+                </motion.div>
               </div>
             </div>
           )}
