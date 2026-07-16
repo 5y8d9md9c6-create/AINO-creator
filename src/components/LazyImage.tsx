@@ -12,6 +12,7 @@ type LazyImageProps = {
 
 function webpCandidate(src: string): string | null {
   if (!src.endsWith(".png")) return null;
+  if (src.includes("tattoo-homies")) return null;
   return src.replace(/\.png$/, ".webp");
 }
 
