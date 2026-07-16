@@ -6,16 +6,16 @@
  */
 export const SITE_CONFIG = {
   /** 本番サイトURL（末尾スラッシュなし） */
-  siteUrl: "https://aino-creator.jp",
+  siteUrl: "https://ainocreator.jp",
 
   /** ブラウザアドレスバー表示用（PlanセクションのモックUI） */
-  siteDisplayHost: "aino-creator.jp",
+  siteDisplayHost: "ainocreator.jp",
 
   /**
    * お問い合わせフォーム mailto 送信先
    * ContactSection → buildMailto()
    */
-  contactEmail: "hello@ainocreator.jp",
+  contactEmail: "hello@aino-creator.com",
 
   /**
    * Footer Mail リンク・JSON-LD email
@@ -23,11 +23,8 @@ export const SITE_CONFIG = {
    */
   brandEmail: "hello@ainocreator.jp",
 
-  /** Instagram プロフィールURL */
-  instagramUrl: "https://instagram.com/ainocreator",
-
-  /** X プロフィールURL */
-  xUrl: "https://x.com/ainocreator",
+  /** Instagram プロフィールURL（開設後に差し替え） */
+  instagramUrl: "https://www.instagram.com/",
 } as const;
 
 /**
@@ -46,4 +43,3 @@ export const SITE_DISPLAY_HOST = SITE_CONFIG.siteDisplayHost;
 export const CONTACT_EMAIL = SITE_CONFIG.contactEmail;
 export const BRAND_EMAIL = SITE_CONFIG.brandEmail;
 export const INSTAGRAM_URL = SITE_CONFIG.instagramUrl;
-export const X_URL = SITE_CONFIG.xUrl;

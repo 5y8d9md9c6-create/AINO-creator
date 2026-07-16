@@ -7,7 +7,6 @@ import Letter, { type LetterHandle } from "./Letter";
 import { computeLayout, LETTER_ORDER, LETTER_WIDTHS, type LetterId } from "./letters";
 import { ANCHOR_OFFSETS, type AnchorKey, type AnnotationPositions } from "./annotationTypes";
 import { HERO_ENHANCED_DELAY_MS } from "../lib/heroTiming";
-import { isMobileScrollViewport } from "../lib/mobileScroll";
 
 export type { AnchorKey, AnnotationPositions } from "./annotationTypes";
 export { createAnnotationPositions } from "./annotationTypes";
@@ -243,14 +242,11 @@ export default function AinoScene({ posRef }: AinoSceneProps) {
   const maxDpr =
     typeof window !== "undefined" ? Math.min(1.75, window.devicePixelRatio || 1) : 1;
 
-  const isMobile = isMobileScrollViewport();
-  const shouldKeepCanvasActive = isMobile || canvasActive;
-
   return (
     <Canvas
       shadows={enhanced}
       dpr={[1, maxDpr]}
-      frameloop={shouldKeepCanvasActive ? "always" : "never"}
+      frameloop={canvasActive ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0.35, 13.5], fov: 26 }}
       style={{ position: "absolute", inset: 0, zIndex: 2 }}

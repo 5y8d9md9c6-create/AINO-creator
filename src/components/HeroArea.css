@@ -25,9 +25,3 @@
 .hero-area .aino-section {
   z-index: 5;
 }
-
-@media (max-width: 767px) {
-  .hero-area {
-    min-height: 100svh;
-  }
-}
