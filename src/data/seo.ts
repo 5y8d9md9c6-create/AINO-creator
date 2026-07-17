@@ -19,7 +19,7 @@ export const SITE_LOCALE = "ja_JP";
 
 export const SITE_THEME_COLOR = "#863bff";
 
-export const OG_IMAGE_PATH = "/og-image.png?v=2";
+export const OG_IMAGE_PATH = "/og-image-v3.png";
 export const OG_IMAGE_ALT = "AINO creator — アイデアを、カタチにして、ワクワクに変える人。";
 
 export const PERSON = {
@@ -27,7 +27,7 @@ export const PERSON = {
   alternateName: "AINO",
   description: SITE_DESCRIPTION,
   email: BRAND_EMAIL,
-  image: `${SITE_URL}/og-image.png`,
+  image: `${SITE_URL}/og-image-v3.png`,
   jobTitle: "Webデザイナー / フロントエンドエンジニア",
   knowsAbout: [
     "Web制作",
