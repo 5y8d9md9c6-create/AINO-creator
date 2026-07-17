@@ -7,10 +7,10 @@ export { SITE_URL } from "./site-config";
 export const SITE_NAME = "AINO creator";
 
 export const SITE_TITLE =
-  "AINO creator｜Web制作・LP・デザイン・アプリ開発";
+  "AINO creator｜伝わるって、おもしろい。";
 
 export const SITE_DESCRIPTION =
-  "AINO creatorは、アイデアをカタチにしてワクワクに変えるクリエイター。ホームページ制作・LP・バナー・フライヤー・アプリ開発まで、体験までデザインします。";
+  "Web制作・LP・デザイン・アプリ開発。アイデアを、伝わるだけじゃない「おもしろい体験」に変えるAINO creatorの公式サイトです。";
 
 export const SITE_KEYWORDS =
   "Web制作,LP制作,デザイン,バナー,フライヤー,アプリ開発,AINO creator,クリエイター,ポートフォリオ";
