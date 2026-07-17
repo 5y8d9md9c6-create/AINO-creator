@@ -19,7 +19,7 @@ export const SITE_LOCALE = "ja_JP";
 
 export const SITE_THEME_COLOR = "#863bff";
 
-export const OG_IMAGE_PATH = "/og-image.png";
+export const OG_IMAGE_PATH = "/og-image.png?v=2";
 export const OG_IMAGE_ALT = "AINO creator — アイデアを、カタチにして、ワクワクに変える人。";
 
 export const PERSON = {
