@@ -27,7 +27,7 @@ export const PERSON = {
   alternateName: "AINO",
   description: SITE_DESCRIPTION,
   email: BRAND_EMAIL,
-  image: `${SITE_URL}/aino-creator-brand.png`,
+  image: `${SITE_URL}/og-image.png`,
   jobTitle: "Webデザイナー / フロントエンドエンジニア",
   knowsAbout: [
     "Web制作",
