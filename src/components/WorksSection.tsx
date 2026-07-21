@@ -18,7 +18,6 @@ import {
 } from "react";
 import {
   filterWorks,
-  isExternalWork,
   WORK_CATEGORIES,
   type Work,
   type WorkCategoryFilter,
@@ -226,8 +225,6 @@ function WorkCard({
   const repulsion = useHoverRepulsion(work.id, slotRef);
   const isFocused = hover.id === work.id;
 
-  const isExternal = isExternalWork(work);
-
   return (
     <motion.div
       ref={slotRef}
@@ -249,17 +246,11 @@ function WorkCard({
         <article className={`works-card ${isFocused ? "is-hovered is-focused" : ""}`}>
           <a
             className="works-card__link"
-            href={isExternal ? work.url : `/works/${work.id}`}
-            target={isExternal ? "_blank" : undefined}
-            rel={isExternal ? "noopener noreferrer" : undefined}
-            onClick={
-              isExternal
-                ? undefined
-                : (e) => {
-                    e.preventDefault();
-                    navigateToWork(work.id);
-                  }
-            }
+            href={`/works/${work.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              navigateToWork(work.id);
+            }}
             onPointerEnter={(e) => onHover(work, e)}
             onPointerMove={(e) => onMove(work, e)}
             onPointerLeave={onLeave}
@@ -276,7 +267,7 @@ function WorkCard({
                   sizes="(max-width: 768px) 88vw, (max-width: 1024px) 44vw, 320px"
                 />
                 <span className="works-card__more" aria-hidden="true">
-                  {isExternal ? "サイトを見る ↗" : "詳しく見る →"}
+                  詳しく見る →
                 </span>
               </div>
               <div className="works-card__meta">

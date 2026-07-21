@@ -11,7 +11,7 @@ import { ContactPlaneProvider } from "./context/ContactPlaneContext";
 import { PaperPlaneFlightLayer } from "./components/PaperPlaneContact";
 import { useWorkRoute } from "./hooks/useWorkRoute";
 import { usePageAnalytics } from "./hooks/usePageAnalytics";
-import { getWorkById, isExternalWork } from "./data/works";
+import { getWorkById } from "./data/works";
 import { navigateToWorksIndex } from "./lib/navigation";
 import WorkDetailPage from "./pages/WorkDetailPage";
 import "./pages/WorkDetailPage.css";
@@ -23,13 +23,6 @@ const ProcessSection = lazy(() => import("./components/ProcessSection"));
 const PlanSection = lazy(() => import("./components/PlanSection"));
 const ContactSection = lazy(() => import("./components/ContactSection"));
 const FooterSection = lazy(() => import("./components/FooterSection"));
-function ExternalWorkRedirect({ url }: { url: string }) {
-  useEffect(() => {
-    window.location.replace(url);
-  }, [url]);
-
-  return null;
-}
 
 function WorkNotFound() {
   return (
@@ -69,7 +62,6 @@ function App() {
 
   if (workId) {
     if (!work) return <WorkNotFound />;
-    if (isExternalWork(work)) return <ExternalWorkRedirect url={work.url!} />;
     return (
       <Suspense fallback={null}>
         <MotionBoundary>

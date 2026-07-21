@@ -122,6 +122,19 @@ export default function WorkDetailPage({ work }: { work: Work }) {
                 </ul>
               </section>
             </div>
+
+            {work.url && (
+              <section className="work-page__block work-page__block--external">
+                <a
+                  href={work.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="work-page__external-btn"
+                >
+                  実際のサイトを見る ↗
+                </a>
+              </section>
+            )}
           </div>
         )}
       </motion.main>
