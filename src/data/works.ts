@@ -44,8 +44,9 @@ export const WORKS: Work[] = [
     role: [],
     tools: [],
     period: "2026年",
+    url: "https://tattoostudiohomies.com/",
+    externalOnly: true,
     layout: "wide",
-    comingSoon: true,
   },
   {
     id: "web-openhouse",
