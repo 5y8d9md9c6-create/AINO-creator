@@ -39,13 +39,14 @@ export const WORKS: Work[] = [
     title: "TATTOO STUDIO HOMIES",
     thumbnail: "/works/tattoo-homies.png",
     images: ["/works/tattoo-homies.png"],
-    overview: "",
-    background: "",
-    role: [],
-    tools: [],
+    overview:
+      "タトゥースタジオ「TATTOO STUDIO HOMIES」の公式WEBサイト。スタジオの持つ洗練されたダークな世界観と、所属アーティストの個性が際立つ作品ギャラリーをスマートに魅せるWebデザイン。",
+    background:
+      "スタジオのブランディング向上と、新規のお客さまが安心してスタジオのクオリティや雰囲気を掴み、スムーズに予約を行える環境づくりを目的に構築。ブラックを基調としたエッジのあるビジュアルと、視認性の高い情報設計のバランスを意識しました。",
+    role: ["デザイン", "コーディング", "情報設計"],
+    tools: ["Figma", "HTML/CSS", "JavaScript"],
     period: "2026年",
     url: "https://tattoostudiohomies.com/",
-    externalOnly: true,
     layout: "wide",
   },
   {
